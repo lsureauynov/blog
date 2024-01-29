@@ -80,3 +80,22 @@
     }
   }
 }
+
+
+.all-articles {
+  max-width: 34.375rem;
+
+  h2 {
+    margin-top: 3rem;
+  }
+
+  .article {
+    width: 16.40625rem;
+    height: 16.40625rem;
+
+    .article-thumbnail {
+      height: 65%;
+      width: 100%;
+    }
+  }
+}
