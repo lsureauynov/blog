@@ -1,0 +1,28 @@
+.footer {
+  gap: 5rem;
+
+  .footer-banner {
+    width: 105%;
+
+    p {
+      margin-bottom: 0;
+      font-size: 1.25rem;
+    }
+  }
+
+  .footer-bottom {
+    gap: 1rem;
+
+    .footer-paragraph {
+      max-width: 18.75rem;
+    }
+
+    .footer-small-text {
+      font-size: 0.75rem;
+    }
+
+    .footer-large-text {
+      font-size: 1.5rem;
+    }
+  }
+}

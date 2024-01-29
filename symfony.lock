@@ -276,11 +276,6 @@
             "./config/routes/web_profiler.yaml"
         ]
     },
-
-    "symfonycasts/verify-email-bundle": {
-        "version": "v1.16.1"
-    },
-
     "symfony/webpack-encore-bundle": {
         "version": "2.1",
         "recipe": {
@@ -296,7 +291,12 @@
             "package.json",
             "webpack.config.js"
         ]
-
+    },
+    "symfonycasts/sass-bundle": {
+        "version": "v0.5.1"
+    },
+    "symfonycasts/verify-email-bundle": {
+        "version": "v1.16.1"
     },
     "twig/extra-bundle": {
         "version": "v3.8.0"
