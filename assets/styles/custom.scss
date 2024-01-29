@@ -1,5 +1,59 @@
+.header {
+  height: 6.5rem;
+  margin-bottom: 3.75rem;
+  padding: 0 1rem;
+
+  @media screen and (min-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media screen and (min-width: 1024px) {
+    padding: 0 4rem;
+  }
+
+  .header-navbar {
+    height: 100%;
+
+    .header-navbar-container,
+    .header-ul-container,
+    .header-ul,
+    li {
+      height: 100%;
+      position: relative;
+
+      .header-links {
+        &::before {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          height: 2px;
+          width: 0;
+          background: black;
+          transition: width 0.25s ease-in-out;
+        }
+
+        &:hover::before {
+          width: 100%;
+        }
+      }
+
+      .active {
+        &::before {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          height: 2px;
+          width: 100% !important;
+          background: black;
+        }
+      }
+    }
+  }
+}
+
 .footer {
   gap: 5rem;
+  margin-top: 7.5rem;
 
   .footer-banner {
     width: 105%;
