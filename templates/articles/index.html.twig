@@ -4,27 +4,37 @@
 {% endblock %}
 
 {% block body %}
-	{# Last article #}
-	<div></div>
+	<div class="articles-container d-flex flex-column justify-content-center align-items-center">
+		<div class="last-article">
+			{% for article in lastArticle %}
+				<div class="last-article-article">
+					<a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
+						<div class="bg-dark	last-article-thumbnail">IMG HERE</div>
+						<h1 class="last-article-title mb-0 mt-3 text-black text-center">{{ article.title }}</h1>
+					</a>
+				</div>
+			{% endfor %}
+		</div>
 
-	<div class="d-flex justify-content-center align-items-center">
-		<div class="all-articles border-top border-black border-2 d-flex flex-column justify-content-center align-items-center gap-4">
-			<h2>All articles</h2>
+		<div class="d-flex justify-content-center align-items-center">
+			<div class="all-articles border-top border-black border-2 d-flex flex-column justify-content-center align-items-center gap-4">
+				<h2>See the last six articles</h2>
 
-			<div class="d-flex justify-content-between flex-wrap gap-4">
-				{% for article in articles %}
-					<div class="article">
-						<a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
-							<div class="bg-dark	article-thumbnail">IMG HERE</div>
-							<p class="mb-0 mt-3 text-black text-center">{{ article.title }}</p>
-						</a>
-					</div>
-				{% else %}
-					<p>Pas encore d'articles</p>
-				{% endfor %}
+				<div class="d-flex justify-content-center justify-content-md-between align-items-center flex-wrap gap-4">
+					{% for article in articles %}
+						<div class="article">
+							<a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
+								<div class="bg-dark	article-thumbnail">IMG HERE</div>
+								<p class="mb-0 mt-3 text-black text-center">{{ article.title }}</p>
+							</a>
+						</div>
+					{% else %}
+						<p>Pas encore d'articles</p>
+					{% endfor %}
+				</div>
+
+				<a href="{{ path('app_articles_all')}}">Voir tous les articles</a>
 			</div>
-
-			<a href="#">Voir tous les articles</a>
 		</div>
 	</div>
 </div>{% endblock %}
