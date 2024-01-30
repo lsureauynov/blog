@@ -22,7 +22,7 @@ class CommentsController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
+    #[Route('/auth/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $comment = new Comments();
@@ -50,7 +50,7 @@ class CommentsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_comments_edit', methods: ['GET', 'POST'])]
+    #[Route('/auth/{id}/edit', name: 'app_comments_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Comments $comment, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CommentsType::class, $comment);
@@ -68,7 +68,7 @@ class CommentsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_comments_delete', methods: ['POST'])]
+    #[Route('/adminauth/{id}', name: 'app_comments_delete', methods: ['POST'])]
     public function delete(Request $request, Comments $comment, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
