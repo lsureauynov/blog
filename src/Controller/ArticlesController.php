@@ -22,7 +22,7 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
+    #[Route('/auth/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $article = new Articles();
@@ -50,7 +50,7 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
+    #[Route('/auth/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Articles $article, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ArticlesType::class, $article);
@@ -68,7 +68,7 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_articles_delete', methods: ['POST'])]
+    #[Route('/adminauth/{id}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {

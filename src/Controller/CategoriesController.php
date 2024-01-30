@@ -22,7 +22,7 @@ class CategoriesController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_categories_new', methods: ['GET', 'POST'])]
+    #[Route('/admin/new', name: 'app_categories_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $category = new Categories();
@@ -50,7 +50,7 @@ class CategoriesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
+    #[Route('/admin/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CategoriesType::class, $category);
@@ -68,7 +68,7 @@ class CategoriesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_categories_delete', methods: ['POST'])]
+    #[Route('/admin/{id}', name: 'app_categories_delete', methods: ['POST'])]
     public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
