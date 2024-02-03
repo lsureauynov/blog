@@ -56,10 +56,23 @@
   margin-top: 7.5rem;
 
   .footer-banner {
-    width: 105%;
+    position: relative;
+    width: 100%;
+    padding-top: 2rem;
+    overflow: hidden;
+
+    .footer-banner-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 105%;
+      height: 100%;
+    }
 
     p {
       margin-bottom: 0;
+      width: auto;
       font-size: 1.25rem;
     }
   }
