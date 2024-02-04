@@ -1,39 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Articles index{% endblock %}
+{% block title %}Articles index
+{% endblock %}
 
 {% block body %}
-    <h1>Articles index</h1>
+	<div class="articles-container d-flex flex-column justify-content-center align-items-center">
+		<div class="last-article">
+			{% for article in lastArticle %}
+				<div class="last-article-article">
+					<a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
+						<div class="bg-dark	last-article-thumbnail">IMG HERE</div>
+						<h1 class="last-article-title mb-0 mt-3 text-black text-center">{{ article.title }}</h1>
+					</a>
+				</div>
+			{% endfor %}
+		</div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Date</th>
-                <th>Content</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for article in articles %}
-            <tr>
-                <td>{{ article.id }}</td>
-                <td>{{ article.title }}</td>
-                <td>{{ article.date ? article.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ article.content }}</td>
-                <td>
-                    <a href="{{ path('app_articles_show', {'id': article.id}) }}">show</a>
-                    <a href="{{ path('app_articles_edit', {'id': article.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+		<div class="d-flex justify-content-center align-items-center">
+			<div class="all-articles border-top border-black border-2 d-flex flex-column justify-content-center align-items-center gap-4">
+				<h2>See the last six articles</h2>
 
-    <a href="{{ path('app_articles_new') }}">Create new</a>
-{% endblock %}
+				<div class="d-flex justify-content-center justify-content-md-between align-items-center flex-wrap gap-4">
+					{% for article in articles %}
+						<div class="article">
+							<a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
+								<div class="bg-dark	article-thumbnail">IMG HERE</div>
+								<p class="mb-0 mt-3 text-black text-center">{{ article.title }}</p>
+							</a>
+						</div>
+					{% else %}
+						<p>Pas encore d'articles</p>
+					{% endfor %}
+				</div>
+
+				<a href="{{ path('app_articles_all')}}">Voir tous les articles</a>
+			</div>
+		</div>
+	</div>
+</div>{% endblock %}

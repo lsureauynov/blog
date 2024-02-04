@@ -18,7 +18,16 @@ class ArticlesController extends AbstractController
     public function index(ArticlesRepository $articlesRepository): Response
     {
         return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findAll(),
+            'articles' => $articlesRepository->findLastSixArticles(),
+            'lastArticle' => $articlesRepository->findLastArticle()
+        ]);
+    }
+
+    #[Route('/all', name: 'app_articles_all', methods: ['GET'])]
+    public function all(ArticlesRepository $articlesRepository): Response
+    {
+        return $this->render('articles/all.html.twig', [
+            'articles' => $articlesRepository->findAll()
         ]);
     }
 
@@ -71,7 +80,7 @@ class ArticlesController extends AbstractController
     #[Route('/adminauth/{id}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
             $entityManager->remove($article);
             $entityManager->flush();
         }
