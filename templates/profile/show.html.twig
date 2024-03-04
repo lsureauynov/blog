@@ -39,6 +39,7 @@
         </section>
         <footer>
             <a href="{{ path('app_profile_edit', {'id': user.id}) }}">edit</a>
+            {{ include('profile/_delete_form.html.twig') }}
         </footer>
     </div>
 {% endblock %}
