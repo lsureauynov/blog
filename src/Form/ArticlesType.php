@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class ArticlesType extends AbstractType
 {
@@ -16,7 +17,7 @@ class ArticlesType extends AbstractType
         $builder
             ->add('title')
             ->add('date')
-            ->add('content')
+            ->add('content', CKEditorType::class)
             ->add('categories', EntityType::class, [
                 'class' => Categories::class,
 'choice_label' => 'id',

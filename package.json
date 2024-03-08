@@ -4,6 +4,7 @@
         "@babel/preset-env": "^7.16.0",
         "@symfony/webpack-encore": "^4.5.0",
         "core-js": "^3.23.0",
+        "file-loader": "^6.0.0",
         "node-sass": "^9.0.0",
         "regenerator-runtime": "^0.13.9",
         "sass-loader": "^13.3.3",
@@ -18,5 +19,8 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "ckeditor4": "^4.13.0"
     }
 }
