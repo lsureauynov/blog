@@ -55,9 +55,17 @@
 								<li class="nav-item d-flex align-items-center">
 									<a class="header-links nav-link text-black text-decoration-none p-0" href="/logout">LOGOUT</a>
 								</li>
+
+								{% if is_granted('ROLE_ADMIN') %}
+									<li class="nav-item d-flex align-items-center">
+										<a class="header-links navlink text-black text-decoration-none p-0" href="/admin">ADMIN</a>
+									</li>
+								{% endif %}
+
 								<li class="nav-item d-flex align-items-center">
 									<a class="header-links nav-link text-black text-decoration-none p-0" href="/auth/user/{{ app.user.id }}">PROFILE</a>
 								</li>
+
 							{% else %}
 								<li class="nav-item d-flex align-items-center">
 									<a class="header-links nav-link text-black text-decoration-none p-0" href="/login">LOGIN</a>
