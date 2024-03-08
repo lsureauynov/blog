@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	Connexion
+{% endblock %}
+
+{% block body %}
+	{% if error %}
+		<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+	{% endif %}
+
+	<div class="container d-flex justify-content-center px-0">
+		<div class="card shadow rounded-3 col-lg-5 d-flex flex-column gap-2">
+			<div class="card-header p-4 h4">
+				Connexion
+			</div>
+
+			<div class="card-body p-4">
+				<form action="{{ path('app_login') }}" method="post" class="d-flex flex-column align-items-center gap-4">
+					<div class="form-group col-12">
+						<label class="form-control-label" for="username">Email:</label>
+						<input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}">
+					</div>
+
+					<div class="form-group col-12">
+						<label class="form-control-label" for="password">Password:</label>
+						<input class="form-control" type="password" id="password" name="_password">
+					</div>
+
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+					<div class="form-group col-12">
+						<button class="btn btn-dark" type="submit">Se connecter</button>
+					</div>
+				</form>
+			</div>
+
+			<div class="card-footer p-3 p">
+				Vous n'avez pas de compte ?
+				<a href="/register" class="card-link">Créer un compte</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}
