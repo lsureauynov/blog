@@ -51,4 +51,15 @@ class ArticlesRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findArticlesByUser($userId) : array 
+    {
+        return $this->createQueryBuilder('a')
+        ->andWhere('a.user = :userId')
+        ->setParameter('userId', $userId)
+        ->orderBy('a.id', 'DESC')
+        ->getQuery()
+        ->getResult();
+    }
+
 }

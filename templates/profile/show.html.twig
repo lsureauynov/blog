@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <header>
+            <h1>Profile</h1>
+            <img src="{{ asset('profile-picture.jpg') }}" alt="Profile Picture">
+        </header>
+        <section class="details">
+            <h2>User Details</h2>
+            <p><strong>Email: </strong> {{ user.email }}</p>
+            <p><strong>Password: </strong>************</p>
+        </section>
+        <section class="articles">
+            <h2>Articles</h2>
+        <ul>
+        {% if articles is not empty %}
+            {% for article in articles %}
+                <li>{{ article.title }}</li>
+        {% endfor %}
+        {% else %}
+            <p>No articles found.</p>
+        {% endif %}
+    </ul>
+        </section>
+        <section class="comments">
+            <h2>Comments</h2>
+            <ul>
+                 {% if comments is not empty %}
+        {% for comment in comments %}
+            <li>{{ comment.content}}</li>
+        {% endfor %}
+    {% else %}
+        <p>No comments found.</p>
+    {% endif %}
+            </ul>
+        </section>
+        <footer>
+            <a href="{{ path('app_profile_edit', {'id': user.id}) }}">edit</a>
+            {{ include('profile/_delete_form.html.twig') }}
+        </footer>
+    </div>
+{% endblock %}
