@@ -35,6 +35,12 @@ class Articles
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $cover_image = null;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -147,6 +153,30 @@ class Articles
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCoverImage(): ?string
+    {
+        return $this->cover_image;
+    }
+
+    public function setCoverImage(string $cover_image): static
+    {
+        $this->cover_image = $cover_image;
 
         return $this;
     }
