@@ -30,6 +30,7 @@ class RegistrationController extends AbstractController
             if ($this->isCsrfTokenValid("registration_form",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
+
             if ($form->isValid()) {
                 // encode the plain password
                 $user->setPassword(

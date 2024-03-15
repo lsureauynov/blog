@@ -45,7 +45,7 @@ class ArticlesController extends AbstractController
         $article = new Articles();
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted()) {
             $user = $security->getUser();
             $article->setUser($user);
@@ -76,14 +76,15 @@ class ArticlesController extends AbstractController
 
                 $article->setCoverImage($newFilename);
             }
+
             if ($form->isValid()) {
                 $entityManager->persist($article);
                 $entityManager->flush();
-
+    
                 return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('articles/new.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -101,22 +102,23 @@ class ArticlesController extends AbstractController
     {
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted()) {
 
             $data = $request->request->all("articles");
 
             if ($this->isCsrfTokenValid("articles", $data['_token'])) {
+
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
+    
             if ($form->isValid()) {
                 $entityManager->flush();
-
+    
                 return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('articles/edit.html.twig', [
             'article' => $article,
             'form' => $form->createView(),

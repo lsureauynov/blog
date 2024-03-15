@@ -40,6 +40,7 @@ class ProfileUserController extends AbstractController
             $data= $request->request->all("edit_user_");       
 
             if ($this->isCsrfTokenValid("edit_user_",$data['_token'])) {
+
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
@@ -65,6 +66,7 @@ class ProfileUserController extends AbstractController
         }
         $entityManager->remove($user);
         $entityManager->flush();
+
 
         return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
     }
