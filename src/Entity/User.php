@@ -37,6 +37,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comments::class)]
     private Collection $comments;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatar = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $twitter_link = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $facebook_link = null;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -169,6 +178,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $comment->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): static
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getTwitterLink(): ?string
+    {
+        return $this->twitter_link;
+    }
+
+    public function setTwitterLink(?string $twitter_link): static
+    {
+        $this->twitter_link = $twitter_link;
+
+        return $this;
+    }
+
+    public function getFacebookLink(): ?string
+    {
+        return $this->facebook_link;
+    }
+
+    public function setFacebookLink(?string $facebook_link): static
+    {
+        $this->facebook_link = $facebook_link;
 
         return $this;
     }

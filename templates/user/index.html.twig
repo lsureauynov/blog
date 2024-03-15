@@ -1,39 +1,69 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User index{% endblock %}
+{% block title %}Liste des utilisateurs
+{% endblock %}
 
 {% block body %}
-    <h1>User index</h1>
+	<div class="d-flex flex-column gap-4" style="padding: 0 4rem;">
+		<h1>Liste des utilisateurs</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Password</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>{{ user.password }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Avatar</th>
+					<th>Id</th>
+					<th>Email</th>
+					<th>Roles</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for user in users %}
+					<tr>
+						<td>
+							<div class="rounded-circle overflow-hidden" style="width: 50px; height: 50px;">
+								{% if user.avatar %}
+									<img src="{{ asset('uploads/avatars/' ~ user.avatar) }}" alt="Avatar de {{ user.email }}" class="object-fit-cover" style="width: 100%; height: 100%;">
+								{% else %}
+									<div style="background: #ccc; width: 100%; height: 100%;"></div>
+								{% endif %}
+							</div>
+						</td>
+						<td>{{ user.id }}</td>
+						<td>{{ user.email }}</td>
+						<td>
+							{% if user.roles is defined and user.roles is iterable %}
+								{% set roles = user.roles %}
+								{% if 'ROLE_ADMIN' in roles and 'ROLE_USER' in roles %}
+									admin, user
+								{% elseif 'ROLE_ADMIN' in roles %}
+									admin
+								{% elseif 'ROLE_USER' in roles %}
+									user
+								{% else %}
+									Aucun rôle défini
+								{% endif %}
+							{% endif %}
+						</td>
+						<td>
+							<button class="btn btn-secondary">
+								<a href="{{ path('app_user_show', {'id': user.id}) }}" class="text-light text-decoration-none">Voir</a>
+							</button>
+							<button class="btn btn-secondary">
+								<a href="{{ path('app_user_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Éditer</a>
+							</button>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="5">no records found</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 
-    <a href="{{ path('app_user_new') }}">Create new</a>
+		<button type="button" class="btn btn-primary" style="width: fit-content">
+			<a href="{{ path('app_user_new') }}" class="text-light text-decoration-none">Ajouter un utilisateur</a>
+		</button>
+	</div>
 {% endblock %}

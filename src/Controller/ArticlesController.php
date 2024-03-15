@@ -6,12 +6,12 @@ use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\ArticlesRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 #[Route('/articles')]
@@ -43,10 +43,13 @@ class ArticlesController extends AbstractController
 
         if ($form->isSubmitted()) {
             $token = new CsrfToken('article_creation', $request->request->get('_csrf_token'));
-            
+
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
+
+            $currentDate = new \DateTime();
+            $article->setDate($currentDate);
 
             if ($form->isValid()) {
                 $entityManager->persist($article);
@@ -78,7 +81,7 @@ class ArticlesController extends AbstractController
 
         if ($form->isSubmitted()) {
             $token = new CsrfToken('article_edit_' . $article->getId(), $request->request->get('_csrf_token'));
-            
+
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }

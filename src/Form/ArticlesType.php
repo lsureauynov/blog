@@ -16,13 +16,12 @@ class ArticlesType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('date')
             ->add('content', CKEditorType::class)
-            ->add('categories', EntityType::class, [
-                'class' => Categories::class,
-'choice_label' => 'id',
-'multiple' => true,
-            ])
+            // ->add('categories', EntityType::class, [
+            //     'class' => Categories::class,
+            //     'choice_label' => 'id',
+            //     'multiple' => true,
+            // ])
         ;
     }
 
