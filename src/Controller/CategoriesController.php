@@ -33,6 +33,7 @@ class CategoriesController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
+
             $data= $request->request->all("categories");       
 
             if ($this->isCsrfTokenValid("categories",$data['_token'])) {
@@ -69,6 +70,7 @@ class CategoriesController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
+
             $data= $request->request->all("categories");       
 
             if ($this->isCsrfTokenValid("categories",$data['_token'])) {
@@ -91,7 +93,7 @@ class CategoriesController extends AbstractController
     #[Route('/admin/{id}', name: 'app_categories_delete', methods: ['POST'])]
     public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->request->get('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
         }

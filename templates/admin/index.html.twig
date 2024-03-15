@@ -1,16 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin index{% endblock %}
+{% block title %}Admin index
+{% endblock %}
 
 {% block body %}
-    <h1>Users management</h1>
-     <a href="{{ path('app_user_index') }}">Manage Users</a>
+	<div class="d-flex flex-column gap-4" style="padding: 0 4rem;">
+		<div class="d-flex align-items-center gap-4">
+			<h2>Users management</h2>
+			<button type="button" class="btn btn-primary" style="height: fit-content; width: fit-content">
+				<a href="{{ path('app_user_index') }}" class="text-light text-decoration-none">Manage Users</a>
+			</button>
+		</div>
 
-    <h1>Articles management</h1>
+		<div class="d-flex align-items-center gap-4">
+			<h2>Articles management</h2>
+			<button type="button" class="btn btn-primary" style="height: fit-content; width: fit-content">
+				<a href="{{ path('app_articles_index') }}" class="text-light text-decoration-none">Manage Articles</a>
+			</button>
+		</div>
 
-    <a href="{{ path('app_articles_index') }}">Manage Articles</a>
-
-    <h1>Comments management</h1>
-
-        <a href="{{ path('app_comments_index') }}">Manage Comments</a>
+		<div class="d-flex align-items-center gap-4">
+			<h2>Comments management</h2>
+			<button type="button" class="btn btn-primary" style="height: fit-content; width: fit-content">
+				<a href="{{ path('app_comments_index') }}" class="text-light text-decoration-none">Manage Comments</a>
+			</button>
+		</div>
+	</div>
 {% endblock %}

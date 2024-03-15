@@ -109,6 +109,8 @@
   .last-article {
     width: 100%;
     margin-bottom: 2rem;
+    border: 3px solid transparent;
+    transition: 0.25s ease-in-out;
 
     @media screen and (min-width: 425px) {
       width: 75%;
@@ -117,6 +119,10 @@
     @media screen and (min-width: 768px) {
       width: 65%;
       max-width: 50rem;
+    }
+
+    &:hover {
+      border: 3px solid black;
     }
 
     .last-article-article {

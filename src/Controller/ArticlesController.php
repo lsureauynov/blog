@@ -6,12 +6,15 @@ use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\ArticlesRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -36,7 +39,8 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/auth/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager,Security $security): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, CsrfTokenManagerInterface $csrfTokenManager, Security $security): Response
+
     {
 
         $article = new Articles();
@@ -52,7 +56,27 @@ class ArticlesController extends AbstractController
             if ($this->isCsrfTokenValid("articles",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-    
+
+            $currentDate = new \DateTime();
+            $article->setDate($currentDate);
+
+            $cover = $form->get('cover')->getData();
+            if ($cover) {
+                $originalFilename = pathinfo($cover->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $cover->guessExtension();
+
+                try {
+                    $cover->move(
+                        $this->getParameter('covers_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                $article->setCoverImage($newFilename);
+            }
             if ($form->isValid()) {
                 $entityManager->persist($article);
                 $entityManager->flush();
@@ -80,9 +104,10 @@ class ArticlesController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
-            $data= $request->request->all("articles");       
 
-            if ($this->isCsrfTokenValid("articles",$data['_token'])) {
+            $data= $request->request->all("article_edit_");       
+
+            if ($this->isCsrfTokenValid("article_edit_",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
