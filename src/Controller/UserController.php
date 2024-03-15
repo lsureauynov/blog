@@ -34,12 +34,11 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('create_user', $request->request->get('_token'));
+            $data= $request->request->all("create_user");       
 
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            if ($this->isCsrfTokenValid("create_user",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
             if ($form->isValid()) {
                 $entityManager->persist($user);
                 $entityManager->flush();
@@ -69,9 +68,9 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('edit_user_' . $user->getId(), $request->request->get('_token'));
+            $data= $request->request->all("edit_user");       
 
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            if ($this->isCsrfTokenValid("edit_user",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
 

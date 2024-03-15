@@ -30,9 +30,9 @@ class CommentsController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('comment_creation', $request->request->get('_csrf_token'));
-            
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            $data= $request->request->all("comments");       
+
+            if ($this->isCsrfTokenValid("comments",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
@@ -65,9 +65,9 @@ class CommentsController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('comment_edit_' . $comment->getId(), $request->request->get('_csrf_token'));
-            
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            $data= $request->request->all("comments");       
+
+            if ($this->isCsrfTokenValid("comments",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     

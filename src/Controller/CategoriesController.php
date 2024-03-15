@@ -33,9 +33,9 @@ class CategoriesController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('category_new', $request->request->get('_csrf_token'));
-    
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            $data= $request->request->all("categories");       
+
+            if ($this->isCsrfTokenValid("categories",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
@@ -69,9 +69,9 @@ class CategoriesController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('category_edit', $request->request->get('_csrf_token'));
-    
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            $data= $request->request->all("categories");       
+
+            if ($this->isCsrfTokenValid("categories",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     

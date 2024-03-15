@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/articles')]
 class ArticlesController extends AbstractController
@@ -35,16 +36,20 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/auth/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager,Security $security): Response
     {
+
         $article = new Articles();
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('article_new', $request->request->get('_csrf_token'));
-    
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            $user = $security->getUser();
+            $article->setUser($user);
+            $data= $request->request->all("articles");   
+                
+
+            if ($this->isCsrfTokenValid("articles",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
@@ -75,9 +80,9 @@ class ArticlesController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('article_edit_' . $article->getId(), $request->request->get('_csrf_token'));
-    
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            $data= $request->request->all("articles");       
+
+            if ($this->isCsrfTokenValid("articles",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
@@ -97,7 +102,7 @@ class ArticlesController extends AbstractController
     #[Route('/adminauth/{id}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
+        if ($this->isTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
             $entityManager->remove($article);
             $entityManager->flush();
         }

@@ -37,9 +37,9 @@ class ProfileUserController extends AbstractController
         $form->handleRequest($request); 
     
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('edit_user_' . $user->getId(), $request->request->get('_token'));
-            
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            $data= $request->request->all("edit_user_");       
+
+            if ($this->isCsrfTokenValid("edit_user_",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
@@ -58,9 +58,9 @@ class ProfileUserController extends AbstractController
     #[Route('/{id}', name:'app_profile_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
-        $token = new CsrfToken('delete_user_' . $user->getId(), $request->request->get('_token'));
-        
-        if (!$csrfTokenManager->isTokenValid($token)) {
+        $data= $request->request->all("edit_user_");       
+
+        if ($this->isCsrfTokenValid("edit_user_",$data['_token'])) {
             throw new InvalidCsrfTokenException('Invalid CSRF token.');
         }
     
