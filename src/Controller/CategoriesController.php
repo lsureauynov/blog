@@ -33,9 +33,10 @@ class CategoriesController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('category_new', $request->request->get('_csrf_token'));
-    
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            $data= $request->request->all("categories");       
+
+            if ($this->isCsrfTokenValid("categories",$data['_token'])) {
+
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
@@ -69,9 +70,10 @@ class CategoriesController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('category_edit', $request->request->get('_csrf_token'));
-    
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            $data= $request->request->all("categories");       
+
+            if ($this->isCsrfTokenValid("categories",$data['_token'])) {
+
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
@@ -91,7 +93,7 @@ class CategoriesController extends AbstractController
     #[Route('/admin/{id}', name: 'app_categories_delete', methods: ['POST'])]
     public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->request->get('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
         }
