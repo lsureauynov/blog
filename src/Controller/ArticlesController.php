@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\ArticlesRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,7 @@ class ArticlesController extends AbstractController
         $article = new Articles();
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted()) {
             $user = $security->getUser();
             $article->setUser($user);
@@ -80,29 +81,38 @@ class ArticlesController extends AbstractController
             if ($form->isValid()) {
                 $entityManager->persist($article);
                 $entityManager->flush();
-    
+
                 return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-    
+
         return $this->render('articles/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_articles_show', methods: ['GET'])]
-    public function show(Articles $article): Response
+    public function show(Articles $article, UserRepository $userRepository): Response
     {
+        $userId = $article->getUser();
+        $user = $userRepository->find($userId);
+
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+
         return $this->render('articles/show.html.twig', [
             'article' => $article,
+            'user' => $user,
         ]);
     }
+
     #[Route('/auth/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Articles $article, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted()) {
 
             $data = $request->request->all("articles");
@@ -111,14 +121,14 @@ class ArticlesController extends AbstractController
 
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-    
+
             if ($form->isValid()) {
                 $entityManager->flush();
-    
+
                 return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-    
+
         return $this->render('articles/edit.html.twig', [
             'article' => $article,
             'form' => $form->createView(),

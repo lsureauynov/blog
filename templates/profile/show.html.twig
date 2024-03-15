@@ -5,11 +5,8 @@
 
 {% block body %}
 	<div class="d-flex flex-column gap-4" style="padding: 0 4rem">
-		<header class="d-flex align-items-center gap-4">
+		<header>
 			<h1>User profile</h1>
-			<button type="button" class="btn btn-primary" style="height: fit-content">
-				<a href="{{ path('app_user_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Edit</a>
-			</button>
 		</header>
 
 		<div class="card p-4 w-100">
@@ -23,27 +20,50 @@
 				</div>
 
 				<h1 class="card-title fs-3">{{ user.email }}</h1>
+
+				{% if user.twitterLink or user.facebookLink %}
+					<div class="d-flex align-items-center">
+						{% if user.twitterLink %}
+							<a href="{{ user.twitterLink }}" class="btn btn-outline-secondary px-4" style="border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: 0">
+								<i class="fab fa-twitter text-black"></i>
+							</a>
+						{% endif %}
+						{% if user.facebookLink %}
+							<a href="{{ user.facebookLink }}" class="btn btn-outline-secondary px-4" style="border-top-left-radius: 0; border-bottom-left-radius: 0">
+								<i class="fab fa-facebook text-black"></i>
+							</a>
+						{% endif %}
+					</div>
+				{% endif %}
 			</div>
 
 			<div class="card-body mt-4">
 				<div>
 					<strong class="fs-5">Articles</strong>
-					<ul>
-						{% if articles is not empty %}
+
+					{% if articles is not empty %}
+						<div class="d-flex gap-4 flex-wrap">
 							{% for article in articles %}
-								<li>
+								<div style="width: 250px; height: 200px">
 									<a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
-										{{ article.title }}
+										<div class="h-75 w-100">
+											{% if article.coverImage %}
+												<img src="{{ asset('uploads/covers/' ~ article.coverImage) }}" class="object-fit-cover h-100 w-100">
+											{% else %}
+												<div style="background: #ccc;" class="h-100 w-100"></div>
+											{% endif %}
+										</div>
+										<p class="mb-0 mt-1 text-black" style="font-size: 10px">{{ article.title }}</p>
 									</a>
-								</li>
+								</div>
 							{% endfor %}
-						{% else %}
-							<p>No articles found.</p>
-						{% endif %}
-					</ul>
+						</div>
+					{% else %}
+						<p>No articles found.</p>
+					{% endif %}
 				</div>
 
-				<div>
+				<div class="mt-4">
 					<strong class="fs-5">Comments</strong>
 					<ul>
 						{% if comments is not empty %}
@@ -62,6 +82,9 @@
 	<div style="padding: 0 4rem" class="mt-4">
 		<button type="button" class="btn btn-primary">
 			<a href="{{ path('app_user_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Back to list</a>
+		</button>
+		<button type="button" class="btn btn-primary" style="height: fit-content">
+			<a href="{{ path('app_user_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Edit</a>
 		</button>
 	</div>
 </div>{% endblock %}
