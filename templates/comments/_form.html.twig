@@ -1,4 +1,5 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
+    {{ form_rest(form) }} {# Renders the CSRF token field #}
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
