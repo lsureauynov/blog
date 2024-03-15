@@ -40,24 +40,23 @@ class ArticlesController extends AbstractController
         $article = new Articles();
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('article_creation', $request->request->get('_csrf_token'));
-            
+            $token = new CsrfToken('article_new', $request->request->get('_csrf_token'));
+    
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
+    
             if ($form->isValid()) {
                 $entityManager->persist($article);
                 $entityManager->flush();
-
+    
                 return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('articles/new.html.twig', [
-            'article' => $article,
             'form' => $form->createView(),
         ]);
     }
@@ -69,33 +68,31 @@ class ArticlesController extends AbstractController
             'article' => $article,
         ]);
     }
-
     #[Route('/auth/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Articles $article, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted()) {
             $token = new CsrfToken('article_edit_' . $article->getId(), $request->request->get('_csrf_token'));
-            
+    
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
+    
             if ($form->isValid()) {
                 $entityManager->flush();
-
+    
                 return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('articles/edit.html.twig', [
             'article' => $article,
             'form' => $form->createView(),
         ]);
     }
-
 
     #[Route('/adminauth/{id}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, EntityManagerInterface $entityManager): Response

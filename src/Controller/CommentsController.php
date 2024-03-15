@@ -10,9 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\Security\Csrf\Exception\InvalidCsrfTokenException;
+
 #[Route('/comments')]
 class CommentsController extends AbstractController
 {
@@ -30,22 +28,22 @@ class CommentsController extends AbstractController
         $comment = new Comments();
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted()) {
             $token = new CsrfToken('comment_creation', $request->request->get('_csrf_token'));
             
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
+    
             if ($form->isValid()) {
                 $entityManager->persist($comment);
                 $entityManager->flush();
-
+    
                 return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('comments/new.html.twig', [
             'comment' => $comment,
             'form' => $form->createView(),
@@ -65,27 +63,26 @@ class CommentsController extends AbstractController
     {
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted()) {
             $token = new CsrfToken('comment_edit_' . $comment->getId(), $request->request->get('_csrf_token'));
             
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
+    
             if ($form->isValid()) {
                 $entityManager->flush();
-
+    
                 return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('comments/edit.html.twig', [
             'comment' => $comment,
             'form' => $form->createView(),
         ]);
     }
-
     #[Route('/adminauth/{id}', name: 'app_comments_delete', methods: ['POST'])]
     public function delete(Request $request, Comments $comment, EntityManagerInterface $entityManager): Response
     {
