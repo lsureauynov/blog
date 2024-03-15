@@ -10,7 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Csrf\Exception\InvalidCsrfTokenException;
 #[Route('/comments')]
 class CommentsController extends AbstractController
 {
@@ -23,22 +25,30 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/auth/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         $comment = new Comments();
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($comment);
-            $entityManager->flush();
+        if ($form->isSubmitted()) {
+            $token = new CsrfToken('comment_creation', $request->request->get('_csrf_token'));
+            
+            if (!$csrfTokenManager->isTokenValid($token)) {
+                throw new InvalidCsrfTokenException('Invalid CSRF token.');
+            }
 
-            return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
+            if ($form->isValid()) {
+                $entityManager->persist($comment);
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->render('comments/new.html.twig', [
             'comment' => $comment,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -51,20 +61,28 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/auth/{id}/edit', name: 'app_comments_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Comments $comment, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Comments $comment, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+        if ($form->isSubmitted()) {
+            $token = new CsrfToken('comment_edit_' . $comment->getId(), $request->request->get('_csrf_token'));
+            
+            if (!$csrfTokenManager->isTokenValid($token)) {
+                throw new InvalidCsrfTokenException('Invalid CSRF token.');
+            }
 
-            return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
+            if ($form->isValid()) {
+                $entityManager->flush();
+
+                return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->render('comments/edit.html.twig', [
             'comment' => $comment,
-            'form' => $form,
+            'form' => $form->createView(),
         ]);
     }
 
