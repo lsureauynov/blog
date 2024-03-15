@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Csrf\Exception\InvalidCsrfTokenException;
+
 #[Route('/categories')]
 class CategoriesController extends AbstractController
 {
@@ -30,28 +31,29 @@ class CategoriesController extends AbstractController
         $category = new Categories();
         $form = $this->createForm(CategoriesType::class, $category);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('category_creation', $request->request->get('_csrf_token'));
-            
+            $token = new CsrfToken('category_new', $request->request->get('_csrf_token'));
+    
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
+    
             if ($form->isValid()) {
                 $entityManager->persist($category);
                 $entityManager->flush();
-
+    
                 return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('categories/new.html.twig', [
             'category' => $category,
             'form' => $form->createView(),
         ]);
     }
-
+    
+    
     #[Route('/{id}', name: 'app_categories_show', methods: ['GET'])]
     public function show(Categories $category): Response
     {
@@ -65,21 +67,21 @@ class CategoriesController extends AbstractController
     {
         $form = $this->createForm(CategoriesType::class, $category);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('category_edit_' . $category->getId(), $request->request->get('_csrf_token'));
-            
+            $token = new CsrfToken('category_edit', $request->request->get('_csrf_token'));
+    
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
+    
             if ($form->isValid()) {
                 $entityManager->flush();
-
+    
                 return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('categories/edit.html.twig', [
             'category' => $category,
             'form' => $form->createView(),
