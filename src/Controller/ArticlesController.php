@@ -42,7 +42,7 @@ class ArticlesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('article_creation', $request->request->get('_csrf_token'));
+            $token = new CsrfToken('articles_new', $request->request->get('_csrf_token'));
 
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');

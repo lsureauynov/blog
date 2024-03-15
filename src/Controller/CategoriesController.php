@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Csrf\Exception\InvalidCsrfTokenException;
+
 #[Route('/categories')]
 class CategoriesController extends AbstractController
 {
@@ -32,8 +33,8 @@ class CategoriesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('category_creation', $request->request->get('_csrf_token'));
-            
+            $token = new CsrfToken('category_new', $request->request->get('_csrf_token'));
+
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
@@ -67,8 +68,8 @@ class CategoriesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('category_edit_' . $category->getId(), $request->request->get('_csrf_token'));
-            
+            $token = new CsrfToken('category_edit', $request->request->get('_csrf_token'));
+
             if (!$csrfTokenManager->isTokenValid($token)) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
@@ -89,7 +90,7 @@ class CategoriesController extends AbstractController
     #[Route('/admin/{id}', name: 'app_categories_delete', methods: ['POST'])]
     public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->request->get('_token'))) {
             $entityManager->remove($category);
             $entityManager->flush();
         }
