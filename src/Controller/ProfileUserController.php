@@ -37,18 +37,18 @@ class ProfileUserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('edit_user_' . $user->getId(), $request->request->get('_token'));
+            $data= $request->request->all("edit_user_");       
 
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            if ($this->isCsrfTokenValid("edit_user_",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
+    
             if ($form->isValid()) {
                 $entityManager->flush();
                 return $this->redirectToRoute('app_profile_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
             }
         }
-
+    
         return $this->render('profile/edit.html.twig', [
             'user' => $user,
             'form' => $form->createView(),
@@ -58,15 +58,15 @@ class ProfileUserController extends AbstractController
     #[Route('/{id}', name: 'app_profile_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
-        $token = new CsrfToken('delete_user_' . $user->getId(), $request->request->get('_token'));
+        $data= $request->request->all("edit_user_");       
 
-        if (!$csrfTokenManager->isTokenValid($token)) {
+        if ($this->isCsrfTokenValid("edit_user_",$data['_token'])) {
             throw new InvalidCsrfTokenException('Invalid CSRF token.');
         }
-
         $entityManager->remove($user);
         $entityManager->flush();
 
         return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
     }
 }
+

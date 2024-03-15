@@ -13,7 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\Security\Csrf\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
@@ -22,14 +23,13 @@ class RegistrationController extends AbstractController
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted()) {
-            $token = new CsrfToken('registration_form', $request->request->get('_token'));
+            $data= $request->request->all("registration_form");       
 
-            if (!$csrfTokenManager->isTokenValid($token)) {
+            if ($this->isCsrfTokenValid("registration_form",$data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-
             if ($form->isValid()) {
                 // encode the plain password
                 $user->setPassword(
@@ -38,15 +38,15 @@ class RegistrationController extends AbstractController
                         $form->get('plainPassword')->getData()
                     )
                 );
-
+    
                 $entityManager->persist($user);
                 $entityManager->flush();
                 // do anything else you need here, like send an email
-
+    
                 return $this->redirectToRoute('app_articles_index');
             }
         }
-
+    
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
