@@ -7,19 +7,22 @@ use SendGrid;
 
 class EmailService
 {
-    public function sendEmail(string $toEmail): void
+    private $sendGridApiKey;
+
+    public function __construct(string $sendGridApiKey)
     {
+        $this->sendGridApiKey = $sendGridApiKey;
+    }
 
-
+    public function sendEmail(string $toEmail, $templateId): void
+    {
         $email = new Mail(); 
         $email->setFrom("lea.sureau@ynov.com", "Example User");
         $email->setSubject("Sending with SendGrid is Fun");
         $email->addTo($toEmail, "Example User");
-        $email->addContent("text/plain", "and easy to do anywhere, even with PHP");
-        $email->addContent(
-            "text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
-        );
-        $sendgrid = new SendGrid('API_KEY');
+        $email->setTemplateId($templateId); 
+
+        $sendgrid = new SendGrid($this->sendGridApiKey);
         try {
             $response = $sendgrid->send($email);
             print $response->statusCode() . "\n";
@@ -28,5 +31,5 @@ class EmailService
         } catch (Exception $e) {
             echo 'Caught exception: '. $e->getMessage() ."\n";
         }
-}   
+    }   
 }

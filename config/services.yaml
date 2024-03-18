@@ -21,6 +21,9 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    App\Service\EmailService:
+        arguments:
+            $sendGridApiKey: '%env(SENDGRID_API_KEY)%'
 
 
     # add more service definitions when explicit configuration is needed
