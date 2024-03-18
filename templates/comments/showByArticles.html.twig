@@ -9,7 +9,16 @@
     {% else %}
         <ul>
             {% for comment in comments %}
-                <li>{{ comment.content }} - {{ comment.user.email }}</li>
+                <li>
+                    {{ comment.content }} - {{ comment.user.email }}
+                    {% if comment.user == app.user %}
+                        <a href="{{ path('app_comments_edit', {'id': comment.id}) }}">Edit</a>
+                        <form method="post" action="{{ path('app_comments_delete', {'id': comment.id}) }}" onsubmit="return confirm('Are you sure you want to delete this comment?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    {% endif %}
+                </li>
             {% endfor %}
         </ul>
     {% endif %}

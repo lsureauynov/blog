@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 
@@ -29,7 +30,7 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/auth/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager, UrlGeneratorInterface $urlGenerator): Response
     {
         $comment = new Comments();
         
@@ -48,7 +49,7 @@ class CommentsController extends AbstractController
             $entityManager->flush();
     
 
-            return new RedirectResponse($request->getUri());
+            return new RedirectResponse($urlGenerator->generate('app_articles_show', ['id' => $articleId]));
         }
     
         return $this->render('comments/new.html.twig', [
@@ -70,6 +71,9 @@ class CommentsController extends AbstractController
     {
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
+        $articleId = $comment->getArticles()->getId();
+
+    
     
         if ($form->isSubmitted()) {
             $data= $request->request->all("comments");       
@@ -80,8 +84,9 @@ class CommentsController extends AbstractController
     
             if ($form->isValid()) {
                 $entityManager->flush();
+
     
-                return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_articles_show', ['id' => $articleId]);
             }
         }
     
@@ -97,9 +102,11 @@ class CommentsController extends AbstractController
             $entityManager->remove($comment);
             $entityManager->flush();
         }
+        $articleId = $comment->getArticles()->getId();
 
-        return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
-    }
+        return $this->redirectToRoute('app_articles_show', ['id' => $articleId]);
+}
+    
 
 
 

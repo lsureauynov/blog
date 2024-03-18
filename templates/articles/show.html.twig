@@ -84,6 +84,8 @@
     </div>
 
     <!-- Comment Form -->
+{% if app.user %}
+    <!-- Comment Form -->
     <div class="row justify-content-center mt-3">
         <div class="col-md-8">
             <div class="card">
@@ -94,7 +96,15 @@
             </div>
         </div>
     </div>
-
+{% else %}
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-8">
+            <div class="alert alert-info" role="alert">
+                You need to <a href="{{ path('app_login') }}">login</a> before you can leave a comment.
+            </div>
+        </div>
+    </div>
+{% endif %}
     <!-- Comment Section -->
     <div class="row justify-content-center mt-5">
         <div class="col-md-8">
