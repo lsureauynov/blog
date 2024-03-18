@@ -13,7 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
+
 
 #[Route('/comments')]
 class CommentsController extends AbstractController
@@ -27,33 +29,26 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/auth/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, Security $security, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         $comment = new Comments();
         
-        // Récupération de l'ArticleId depuis l'URL
         $articleId = $request->query->get('articleId');
-        // Vous pouvez valider et utiliser $articleId comme nécessaire
-
-        // Récupération automatique du UserId de l'utilisateur connecté
-        $user = $security->getUser();
-        $userId = $user->getId();
-        // Vous pouvez valider et utiliser $userId comme nécessaire
-
-        // Création du formulaire de commentaire
+        $article = $entityManager->getRepository(Articles::class)->find($articleId);
+        $user = $this->getUser();
+    
+        $comment->setArticles($article);
+        $comment->setUser($user);
+    
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            // Affectation de l'ArticleId et du UserId au commentaire
-            $comment->setArticleId($articleId);
-            $comment->setUserId($userId);
-
-            // Gestion de la sauvegarde du commentaire
             $entityManager->persist($comment);
             $entityManager->flush();
     
-            return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
+
+            return new RedirectResponse($request->getUri());
         }
     
         return $this->render('comments/new.html.twig', [

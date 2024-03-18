@@ -1,5 +1,10 @@
 {{ form_start(form) }}
+
+    {# Render all form fields including content #}
     {{ form_widget(form) }}
+
+    {# Render the CSRF token field and the submit button #}
     {{ form_rest(form) }} {# Renders the CSRF token field #}
     <button class="btn">{{ button_label|default('Save') }}</button>
+
 {{ form_end(form) }}

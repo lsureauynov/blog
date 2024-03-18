@@ -89,7 +89,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Leave a Comment</h5>
-                    <iframe class="comment-iframe" src="{{ path('app_comments_new') }}" frameborder="0" scrolling="no"></iframe>
+                    <iframe class="comment-iframe" src="{{ path('app_comments_new', {'articleId': article.id}) }}" frameborder="0" scrolling="no"></iframe>
                 </div>
             </div>
         </div>
