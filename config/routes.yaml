@@ -7,3 +7,7 @@ app_articles_search:
     path: '/search'
     controller: 'App\Controller\ArticlesController::searchByTitle'
     methods: ['GET']
+app_search_result:
+    path: '/search_results'
+    controller: App\Controller\ArticlesController::searchResult
+    methods: GET

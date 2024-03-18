@@ -159,5 +159,18 @@ class ArticlesController extends AbstractController
     
         return new JsonResponse($jsonData);
     }
+
+    #[Route('/search_results', name: 'app_search_result', methods: ['GET'])]
+public function searchResult(Request $request, ArticlesRepository $articlesRepository): Response
+{
+    $query = $request->query->get('query');
+    $articles = $articlesRepository->findArticlesByTitle($query);
     
+    return $this->render('articles/search_results.html.twig', [
+        'query' => $query,
+        'articles' => $articles,
+    ]);
+}
+
+   
 }

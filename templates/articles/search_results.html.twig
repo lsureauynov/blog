@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats de la recherche{% endblock %}
+
+{% block body %}
+    <h1>Résultats de la recherche</h1>
+
+    {% if articles is empty %}
+        <p>Aucun résultat trouvé pour votre recherche.</p>
+    {% else %}
+        <ul>
+            {% for article in articles %}
+                <li>
+                    <a href="{{ path('app_articles_show', {'id': article.id}) }}">{{ article.title }}</a>
+                    <img src="{{ asset('uploads/covers/' ~ article.coverImage) }}" class="object-fit-cover" style="width: 100%; height: 100%;">
+                    <small>Publié le {{ article.date ? article.date|date('Y-m-d') : 'Non spécifié' }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a href="{{ path('app_articles_index') }}">Retour à la liste des articles</a>
+{% endblock %}
