@@ -55,4 +55,16 @@ public function findCommentsByUser($userId) : array
     ->getQuery()
     ->getResult();
 }
+
+public function findCommentsByArticle($articleId) : array 
+{
+    return $this->createQueryBuilder('c')
+        ->join('c.articles', 'a')
+        ->andWhere('a.id = :articleId')
+        ->setParameter('articleId', $articleId)
+        ->orderBy('c.id', 'DESC')
+        ->getQuery()
+        ->getResult();
+
+}
 }

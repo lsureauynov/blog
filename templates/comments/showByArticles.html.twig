@@ -1,0 +1,16 @@
+{# templates/comments/showByArticles.html.twig #}
+
+
+{% block body %}
+    <h1>Comments</h1>
+
+    {% if comments is empty %}
+        <p>No comments yet.</p>
+    {% else %}
+        <ul>
+            {% for comment in comments %}
+                <li>{{ comment.content }} - {{ comment.user.email }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

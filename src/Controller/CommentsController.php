@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Comments;
+use App\Entity\Articles;
 use App\Form\CommentsType;
 use App\Repository\CommentsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,6 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/comments')]
 class CommentsController extends AbstractController
@@ -23,25 +27,33 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/auth/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, Security $security, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         $comment = new Comments();
+        
+        // Récupération de l'ArticleId depuis l'URL
+        $articleId = $request->query->get('articleId');
+        // Vous pouvez valider et utiliser $articleId comme nécessaire
+
+        // Récupération automatique du UserId de l'utilisateur connecté
+        $user = $security->getUser();
+        $userId = $user->getId();
+        // Vous pouvez valider et utiliser $userId comme nécessaire
+
+        // Création du formulaire de commentaire
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
     
-        if ($form->isSubmitted()) {
-            $data= $request->request->all("comments");       
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Affectation de l'ArticleId et du UserId au commentaire
+            $comment->setArticleId($articleId);
+            $comment->setUserId($userId);
 
-            if ($this->isCsrfTokenValid("comments",$data['_token'])) {
-                throw new InvalidCsrfTokenException('Invalid CSRF token.');
-            }
+            // Gestion de la sauvegarde du commentaire
+            $entityManager->persist($comment);
+            $entityManager->flush();
     
-            if ($form->isValid()) {
-                $entityManager->persist($comment);
-                $entityManager->flush();
-    
-                return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
-            }
+            return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
         }
     
         return $this->render('comments/new.html.twig', [
@@ -93,4 +105,18 @@ class CommentsController extends AbstractController
 
         return $this->redirectToRoute('app_comments_index', [], Response::HTTP_SEE_OTHER);
     }
+
+
+
+        #[Route('/article/{id}', name: 'app_comments_by_article', methods: ['GET'])]
+        public function getByArticle(Articles $articles, CommentsRepository $commentsRepository): Response
+        {
+            $comments = $commentsRepository->findCommentsByArticle($articles->getId());
+    
+            return $this->render('comments/showByArticles.html.twig', [
+                'comments' => $comments,
+            ]);
+        }
+    
+    
 }
