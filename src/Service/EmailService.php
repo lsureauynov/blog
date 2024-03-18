@@ -19,7 +19,7 @@ class EmailService
         $email->addContent(
             "text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
         );
-        $sendgrid = new SendGrid('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');
+        $sendgrid = new SendGrid('API_KEY');
         try {
             $response = $sendgrid->send($email);
             print $response->statusCode() . "\n";
