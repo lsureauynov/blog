@@ -1,25 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tous les articles
+{% block title %}All articles
 {% endblock %}
 
 {% block body %}
-	<div class="d-flex justify-content-center align-items-center">
-		<div class="all-articles d-flex flex-column justify-content-center align-items-center gap-4">
+	<div class="articles-container d-flex flex-column justify-content-center align-items-center">
+		<div class="all-articles-page d-flex flex-column justify-content-center align-items-center gap-4 bg-primary">
 			<h2>All articles</h2>
 
-			<div class="d-flex justify-content-between flex-wrap gap-4">
+			<div class="d-flex justify-content-center align-items-start flex-wrap gap-4">
 				{% for article in articles %}
 					<div class="article">
 						<a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
-							<div class="bg-dark	article-thumbnail">IMG HERE</div>
+							<div class="bg-dark	article-thumbnail">
+								{% if article.coverImage %}
+									<img src="{{ asset('uploads/covers/' ~ article.coverImage) }}" class="object-fit-cover w-100 h-100">
+								{% else %}
+									<div class="w-100 h-100" style="background: #ccc"></div>
+								{% endif %}
+							</div>
 							<p class="mb-0 mt-3 text-black text-center">{{ article.title }}</p>
 						</a>
 					</div>
-				{% else %}
-					<p>Pas encore d'articles</p>
 				{% endfor %}
 			</div>
 		</div>
 	</div>
-</div>{% endblock %}
+{% endblock %}
