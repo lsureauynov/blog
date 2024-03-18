@@ -4,9 +4,9 @@
 {% endblock %}
 
 {% block body %}
-	<div class="articles-container d-flex flex-column justify-content-center align-items-center">
-		<div class="all-articles-page d-flex flex-column justify-content-center align-items-center gap-4 bg-primary">
-			<h2>All articles</h2>
+	<div class="articles-container d-flex justify-content-center align-items-start">
+		<div class="all-articles-page d-flex flex-column justify-content-center align-items-center gap-4">
+			<h2 class="mt-0">All articles</h2>
 
 			<div class="d-flex justify-content-center align-items-start flex-wrap gap-4">
 				{% for article in articles %}

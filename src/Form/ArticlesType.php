@@ -26,7 +26,7 @@ class ArticlesType extends AbstractType
             //     'multiple' => true,
             // ])
             ->add('cover', FileType::class, [
-                'label' => 'Importez votre image de couverture',
+                'label' => 'Upload your cover image',
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
