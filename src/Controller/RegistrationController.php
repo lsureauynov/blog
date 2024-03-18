@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Service\EmailService; // Importez le service EmailService
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,6 +18,13 @@ use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 class RegistrationController extends AbstractController
 {
+    private $emailService;
+
+    public function __construct(EmailService $emailService)
+    {
+        $this->emailService = $emailService;
+    }
+
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
@@ -42,8 +50,12 @@ class RegistrationController extends AbstractController
     
                 $entityManager->persist($user);
                 $entityManager->flush();
-                // do anything else you need here, like send an email
-    
+                
+                // Envoyez l'e-mail de confirmation
+                $this->emailService->sendEmail("leasureau27@gmail.com");
+
+
+                // Redirigez l'utilisateur vers une autre page après l'inscription
                 return $this->redirectToRoute('app_articles_index');
             }
         }

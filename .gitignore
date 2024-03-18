@@ -30,3 +30,5 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+"export SENDGRID_API_KEY='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'"  echo "sendgrid.env"  source ./sendgrid.env
+"sendgrid.env" 
