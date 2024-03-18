@@ -17,6 +17,8 @@ class UserType extends AbstractType
             ->add('email')
             // ->add('roles')
             ->add('password')
+            ->add('twitterLink')
+            ->add('facebookLink')
             ->add('avatar', FileType::class, [
                 'label' => 'Importez votre avatar',
                 'mapped' => false,

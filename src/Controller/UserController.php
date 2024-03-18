@@ -35,9 +35,9 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $data= $request->request->all("create_user");       
+            $data = $request->request->all("create_user");
 
-            if ($this->isCsrfTokenValid("create_user",$data['_token'])) {
+            if ($this->isCsrfTokenValid("create_user", $data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
 
@@ -89,11 +89,11 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $data= $request->request->all("edit_user");       
+            // $data = $request->request->all("edit_user");
 
-            if ($this->isCsrfTokenValid("edit_user",$data['_token'])) {
-                throw new InvalidCsrfTokenException('Invalid CSRF token.');
-            }
+            // if ($this->isCsrfTokenValid("edit_user", $data['_token'])) {
+            //     throw new InvalidCsrfTokenException('Invalid CSRF token.');
+            // }
 
             $avatar = $form->get('avatar')->getData();
 
