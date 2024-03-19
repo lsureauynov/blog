@@ -5,7 +5,7 @@
 
 {% block body %}
 	<div class="d-flex flex-column gap-4" style="padding: 0 4rem;">
-		<h1>User list</h1>
+		<h1>Users list</h1>
 
 		<table class="table">
 			<thead>
@@ -41,16 +41,16 @@
 								{% elseif 'ROLE_USER' in roles %}
 									user
 								{% else %}
-									Aucun rôle défini
+									No role defined
 								{% endif %}
 							{% endif %}
 						</td>
 						<td>
 							<button class="btn btn-secondary">
-								<a href="{{ path('app_user_show', {'id': user.id}) }}" class="text-light text-decoration-none">Voir</a>
+								<a href="{{ path('app_user_show', {'id': user.id}) }}" class="text-light text-decoration-none">Show</a>
 							</button>
 							<button class="btn btn-secondary">
-								<a href="{{ path('app_user_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Éditer</a>
+								<a href="{{ path('app_user_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Edit</a>
 							</button>
 						</td>
 					</tr>
@@ -63,7 +63,7 @@
 		</table>
 
 		<button type="button" class="btn btn-primary" style="width: fit-content">
-			<a href="{{ path('app_user_new') }}" class="text-light text-decoration-none">Ajouter un utilisateur</a>
+			<a href="{{ path('app_user_new') }}" class="text-light text-decoration-none">Add user</a>
 		</button>
 	</div>
 {% endblock %}

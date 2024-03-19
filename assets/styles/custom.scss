@@ -176,4 +176,53 @@
       }
     }
   }
+
+
+
+  .all-articles-page {
+    max-width: 75%;
+
+    h2 {
+      margin-top: 4rem;
+    }
+
+    .article {
+      width: 100%;
+
+      @media screen and (min-width: 425px) {
+        width: 75%;
+      }
+
+      @media screen and (min-width: 768px) {
+        width: 65%;
+        max-width: 16.40625rem;
+      }
+
+      .article-thumbnail {
+        height: 10rem;
+        width: 100%;
+      }
+    }
+  }
+
+.search-results-container {
+  position: absolute;
+  top: calc(100% + 10px); /* Décalage par rapport à la barre de recherche */
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 999; /* Assurez-vous que les résultats s'affichent au-dessus des autres éléments */
+}
+
+.search-result {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.search-result:last-child {
+  border-bottom: none; 
+
 }
