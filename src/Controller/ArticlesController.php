@@ -8,6 +8,7 @@ use App\Repository\ArticlesRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Csrf\CsrfToken;
@@ -17,10 +18,13 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 #[Route('/articles')]
 class ArticlesController extends AbstractController
 {
+
+
     #[Route('/', name: 'app_articles_index', methods: ['GET'])]
     public function index(ArticlesRepository $articlesRepository): Response
     {
@@ -94,12 +98,14 @@ class ArticlesController extends AbstractController
     #[Route('/{id}', name: 'app_articles_show', methods: ['GET'])]
     public function show(Articles $article, UserRepository $userRepository): Response
     {
+
         $userId = $article->getUser();
         $user = $userRepository->find($userId);
 
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
+
 
         return $this->render('articles/show.html.twig', [
             'article' => $article,
@@ -144,5 +150,38 @@ class ArticlesController extends AbstractController
         }
 
         return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
+    }  
+
+    #[Route('/search', name: "app_articles_search", methods: ["GET"])]
+    public function searchByTitle(Request $request, ArticlesRepository $articlesRepository)
+    {
+        
+        $query = $request->query->get('query');
+
+        $articles = $articlesRepository->findArticlesByTitle($query);
+    
+        $jsonData = [];
+        foreach ($articles as $article) {
+            $jsonData[] = [
+                'id' => $article->getId(),
+                'title' => $article->getTitle(),
+            ];
+        }
+    
+        return new JsonResponse($jsonData);
     }
+
+    #[Route('/search_results', name: 'app_search_result', methods: ['GET'])]
+public function searchResult(Request $request, ArticlesRepository $articlesRepository): Response
+{
+    $query = $request->query->get('query');
+    $articles = $articlesRepository->findArticlesByTitle($query);
+    
+    return $this->render('articles/search_results.html.twig', [
+        'query' => $query,
+        'articles' => $articles,
+    ]);
+}
+
+   
 }
