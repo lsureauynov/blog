@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\ArticlesRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Csrf\CsrfToken;
@@ -16,10 +18,13 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 #[Route('/articles')]
 class ArticlesController extends AbstractController
 {
+
+
     #[Route('/', name: 'app_articles_index', methods: ['GET'])]
     public function index(ArticlesRepository $articlesRepository): Response
     {
@@ -45,7 +50,7 @@ class ArticlesController extends AbstractController
         $article = new Articles();
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted()) {
             $user = $security->getUser();
             $article->setUser($user);
@@ -80,29 +85,40 @@ class ArticlesController extends AbstractController
             if ($form->isValid()) {
                 $entityManager->persist($article);
                 $entityManager->flush();
-    
+
                 return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-    
+
         return $this->render('articles/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_articles_show', methods: ['GET'])]
-    public function show(Articles $article): Response
+    public function show(Articles $article, UserRepository $userRepository): Response
     {
+
+        $userId = $article->getUser();
+        $user = $userRepository->find($userId);
+
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+
+
         return $this->render('articles/show.html.twig', [
             'article' => $article,
+            'user' => $user,
         ]);
     }
+
     #[Route('/auth/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Articles $article, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted()) {
 
             $data = $request->request->all("articles");
@@ -111,14 +127,14 @@ class ArticlesController extends AbstractController
 
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-    
+
             if ($form->isValid()) {
                 $entityManager->flush();
-    
+
                 return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-    
+
         return $this->render('articles/edit.html.twig', [
             'article' => $article,
             'form' => $form->createView(),
@@ -134,5 +150,38 @@ class ArticlesController extends AbstractController
         }
 
         return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
+    }  
+
+    #[Route('/search', name: "app_articles_search", methods: ["GET"])]
+    public function searchByTitle(Request $request, ArticlesRepository $articlesRepository)
+    {
+        
+        $query = $request->query->get('query');
+
+        $articles = $articlesRepository->findArticlesByTitle($query);
+    
+        $jsonData = [];
+        foreach ($articles as $article) {
+            $jsonData[] = [
+                'id' => $article->getId(),
+                'title' => $article->getTitle(),
+            ];
+        }
+    
+        return new JsonResponse($jsonData);
     }
+
+    #[Route('/search_results', name: 'app_search_result', methods: ['GET'])]
+public function searchResult(Request $request, ArticlesRepository $articlesRepository): Response
+{
+    $query = $request->query->get('query');
+    $articles = $articlesRepository->findArticlesByTitle($query);
+    
+    return $this->render('articles/search_results.html.twig', [
+        'query' => $query,
+        'articles' => $articles,
+    ]);
+}
+
+   
 }

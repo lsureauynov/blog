@@ -1,17 +1,22 @@
 <form action="{{ path('app_profile_edit', {'id': user.id}) }}" method="post">
-    <input type="hidden" name="_token" value="{{ csrf_token('edit_user_' ~ user.id) }}">
-    
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="{{ user.email }}" required>
-    </div>
-    <div>
-        <label for="password">New Password:</label>
-        <input type="password" id="password" name="password" placeholder="Enter new password">
-    </div>
-    <div>
-        <label for="current_password">Current Password:</label>
-        <input type="password" id="current_password" name="current_password" placeholder="Enter current password" required>
-    </div>
-    <button type="submit">Save Changes</button>
+	<div class="d-flex flex-column align-items-start gap-4">
+		<input type="hidden" name="_token" value="{{ csrf_token('edit_user_' ~ user.id) }}">
+
+		<div class="form-group col-12">
+			<label for="email" class="form-control-label">Email:</label>
+			<input type="email" id="email" name="email" class="form-control" value="{{ user.email }}" required>
+		</div>
+
+		<div class="form-group col-12">
+			<label for="password" class="form-control-label">New Password:</label>
+			<input type="password" id="password" name="password" class="form-control" placeholder="Enter new password">
+		</div>
+
+		<div class="form-group col-12">
+			<label for="current_password" class="form-control-label">Current Password:</label>
+			<input type="password" id="current_password" name="current_password" class="form-control" placeholder="Enter current password" required>
+		</div>
+
+		<button type="submit" class="btn btn-primary">Save Changes</button>
+	</div>
 </form>

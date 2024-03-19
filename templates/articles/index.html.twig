@@ -12,8 +12,8 @@
 						<div class="bg-dark	last-article-thumbnail">
 							<img src="{{ asset('uploads/covers/' ~ article.coverImage) }}" class="object-fit-cover" style="width: 100%; height: 100%;">
 						</div>
-						<h1 class="last-article-title mb-0 mt-3 text-black text-center">{{ article.title }}</h1>
-						<p class="text-center text-black">{{ article.description }}</p>
+						<h1 class="last-article-title mb-0 mt-3 text-black text-center lh-1">{{ article.title }}</h1>
+						<p class="text-center text-black mt-3">{{ article.description }}</p>
 					</a>
 				</div>
 			{% endfor %}
@@ -21,9 +21,9 @@
 
 		<div class="d-flex justify-content-center align-items-center">
 			<div class="all-articles border-top border-black border-2 d-flex flex-column justify-content-center align-items-center gap-4">
-				<h2>See the last six articles</h2>
+				<h2>See the last articles</h2>
 
-				<div class="d-flex justify-content-center justify-content-md-between align-items-center flex-wrap gap-4">
+				<div class="d-flex justify-content-center align-items-start flex-wrap gap-4">
 					{% for article in articles %}
 						<div class="article">
 							<a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
@@ -38,11 +38,11 @@
 							</a>
 						</div>
 					{% else %}
-						<p>Pas encore d'articles</p>
+						<p>No articles yet</p>
 					{% endfor %}
 				</div>
 
-				<a href="{{ path('app_articles_all')}}">Voir tous les articles</a>
+				<a href="{{ path('app_articles_all')}}">See all articles</a>
 			</div>
 		</div>
 	</div>
