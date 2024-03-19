@@ -3,21 +3,30 @@
 {% block title %}Résultats de la recherche{% endblock %}
 
 {% block body %}
-    <h1>Résultats de la recherche</h1>
+    <div class="articles-container d-flex flex-column justify-content-center align-items-center">
+        <div class="last-article">
+            {% if articles is empty %}
+                <p>Aucun résultat trouvé pour votre recherche.</p>
+            {% else %}
+                {% for article in articles %}
+                    <div class="last-article-article mb-4"> <!-- Ajout de la classe mb-4 pour ajouter une marge en bas -->
+                        <a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
+                            <div class="bg-dark last-article-thumbnail">
+                                <img src="{{ asset('uploads/covers/' ~ article.coverImage) }}" class="object-fit-cover" style="width: 100%; height: 100%;">
+                            </div>
+                            <h1 class="last-article-title mb-0 mt-3 text-black text-center lh-1">{{ article.title }}</h1>
+                            <p class="text-center text-black mt-3">{{ article.description }}</p>
+                            <small>Publié le {{ article.date ? article.date|date('Y-m-d') : 'Non spécifié' }}</small>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
 
-    {% if articles is empty %}
-        <p>Aucun résultat trouvé pour votre recherche.</p>
-    {% else %}
-        <ul>
-            {% for article in articles %}
-                <li>
-                    <a href="{{ path('app_articles_show', {'id': article.id}) }}">{{ article.title }}</a>
-                    <img src="{{ asset('uploads/covers/' ~ article.coverImage) }}" class="object-fit-cover" style="width: 100%; height: 100%;">
-                    <small>Publié le {{ article.date ? article.date|date('Y-m-d') : 'Non spécifié' }}</small>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        
 
-    <a href="{{ path('app_articles_index') }}">Retour à la liste des articles</a>
+                <a href="{{ path('app_articles_all')}}">See all articles</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

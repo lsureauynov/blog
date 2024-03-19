@@ -40,7 +40,6 @@ class RegistrationController extends AbstractController
             }
 
             if ($form->isValid()) {
-                // encode the plain password
                 $user->setPassword(
                     $userPasswordHasher->hashPassword(
                         $user,
@@ -51,12 +50,10 @@ class RegistrationController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
                 
-                // Envoyez l'e-mail de confirmation
                 var_dump($user->getEmail());
                 $this->emailService->sendEmail($user->getEmail(), 'd-c700cb43db334983ba7af1c4ed8020f6');
 
 
-                // Redirigez l'utilisateur vers une autre page après l'inscription
                 return $this->redirectToRoute('app_articles_index');
             }
         }

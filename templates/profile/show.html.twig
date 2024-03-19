@@ -1,100 +1,113 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User Profile
-{% endblock %}
+{% block title %}User Profile{% endblock %}
 
 {% block body %}
-	<div class="d-flex flex-column gap-4" style="padding: 0 4rem">
-		<header>
-			<h1>User profile</h1>
-		</header>
+<div class="d-flex flex-column gap-4" style="padding: 0 4rem">
+    <header>
+        <h1>User profile</h1>
+    </header>
 
-		<div class="card p-4 w-100">
-			<div class="d-flex align-items-center gap-3">
-				<div class="rounded-circle overflow-hidden" style="width: 75px; height: 75px;">
-					{% if user.avatar %}
-						<img src="{{ asset('uploads/avatars/' ~ user.avatar) }}" alt="Avatar de {{ user.email }}" class="object-fit-cover" style="width: 100%; height: 100%;">
-					{% else %}
-						<div style="background: #ccc; width: 100%; height: 100%;"></div>
-					{% endif %}
-				</div>
+    <div class="card p-4 w-100">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle overflow-hidden" style="width: 75px; height: 75px;">
+                {% if user.avatar %}
+                <img src="{{ asset('uploads/avatars/' ~ user.avatar) }}" alt="Avatar de {{ user.email }}" class="object-fit-cover" style="width: 100%; height: 100%;">
+                {% else %}
+                <div style="background: #ccc; width: 100%; height: 100%;"></div>
+                {% endif %}
+            </div>
 
-				<h1 class="card-title fs-3">{{ user.email }}</h1>
+            <h1 class="card-title fs-3">{{ user.email }}</h1>
 
-				{% if user.twitterLink or user.facebookLink %}
-					<div class="d-flex align-items-center">
-						{% if user.twitterLink %}
-							<a href="{{ user.twitterLink }}" class="btn btn-outline-secondary px-4" style="border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: 0">
-								<i class="fab fa-twitter text-black"></i>
-							</a>
-						{% endif %}
-						{% if user.facebookLink %}
-							<a href="{{ user.facebookLink }}" class="btn btn-outline-secondary px-4" style="border-top-left-radius: 0; border-bottom-left-radius: 0">
-								<i class="fab fa-facebook text-black"></i>
-							</a>
-						{% endif %}
-					</div>
-				{% endif %}
-			</div>
+            {% if user.twitterLink or user.facebookLink %}
+            <div class="d-flex align-items-center">
+                {% if user.twitterLink %}
+                <a href="{{ user.twitterLink }}" class="btn btn-outline-secondary px-4" style="border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: 0">
+                    <i class="fab fa-twitter text-black"></i>
+                </a>
+                {% endif %}
+                {% if user.facebookLink %}
+                <a href="{{ user.facebookLink }}" class="btn btn-outline-secondary px-4" style="border-top-left-radius: 0; border-bottom-left-radius: 0">
+                    <i class="fab fa-facebook text-black"></i>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
 
-			<div class="card-body mt-4">
-				<div>
-					<strong class="fs-5">Articles</strong>
+        <div class="card-body mt-4">
+            <div>
+                <strong class="fs-5">Articles</strong>
 
-					{% if articles is not empty %}
-						<div class="d-flex gap-4 flex-wrap">
-							{% for article in articles %}
-								<div class="position-relative" style="width: 250px; height: 200px">
-									<a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
-										<div class="h-75 w-100">
-											{% if article.coverImage %}
-												<img src="{{ asset('uploads/covers/' ~ article.coverImage) }}" class="object-fit-cover h-100 w-100">
-											{% else %}
-												<div style="background: #ccc;" class="h-100 w-100"></div>
-											{% endif %}
-										</div>
-										<p class="mb-0 mt-1 text-black" style="font-size: 10px">{{ article.title }}</p>
-									</a>
+                {% if articles is not empty %}
+                <div class="d-flex gap-4 flex-wrap">
+                    {% for article in articles %}
+                    <div class="position-relative" style="width: 250px; height: 200px">
+                        <a href="{{ path('app_articles_show', {'id': article.id}) }}" class="text-decoration-none">
+                            <div class="h-75 w-100">
+                                {% if article.coverImage %}
+                                <img src="{{ asset('uploads/covers/' ~ article.coverImage) }}" class="object-fit-cover h-100 w-100">
+                                {% else %}
+                                <div style="background: #ccc;" class="h-100 w-100"></div>
+                                {% endif %}
+                            </div>
+                            <p class="mb-0 mt-1 text-black" style="font-size: 10px">{{ article.title }}</p>
+                        </a>
 
-									<div class="position-absolute" style="top: 5px; right: 5px;">
-										<form method="post" action="{{ path('app_articles_delete', {'id': article.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
-											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-											<button class="btn btn-danger">
-												<i class="fas fa-times"></i>
-											</button>
-										</form>
-									</div>
-								</div>
-							{% endfor %}
-						</div>
-					{% else %}
-						<p>No articles found.</p>
-					{% endif %}
-				</div>
+                        <div class="position-absolute" style="top: 5px; right: 5px;">
+                            <form method="post" action="{{ path('app_articles_delete', {'id': article.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                <button class="btn btn-danger">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No articles found.</p>
+                {% endif %}
+            </div>
 
-				<div class="mt-4">
-					<strong class="fs-5">Comments</strong>
-					{% if comments is not empty %}
-						{% for comment in comments %}
-							<p>{{ comment.content}}</p>
-						{% endfor %}
-					{% else %}
-						<p>No comments found.</p>
-					{% endif %}
-				</div>
-			</div>
-		</div>
-	</div>
+            <div class="mt-4">
+                <strong class="fs-5">Comments</strong>
+                {% if comments is empty %}
+                <p>No comments yet.</p>
+                {% else %}
+                <ul>
+                    {% for comment in comments %}
+                    <li>
+                        {{ comment.content }} - {{ comment.user.email }}
+							{% if articlesByComment[comment.id] is defined %}
+							 : <a href="{{ path('app_articles_show', {'id': articlesByComment[comment.id].id}) }}">{{ articlesByComment[comment.id].title }}</a>
+							{% endif %} 
+                        {% if comment.user == app.user %}
+                        <a href="{{ path('app_comments_edit', {'id': comment.id}) }}">Edit</a>
+                        <form method="post" action="{{ path('app_comments_delete', {'id': comment.id}) }}" onsubmit="return confirm('Are you sure you want to delete this comment?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 
-	<div style="padding: 0 4rem" class="mt-4">
-		{% if is_granted('ROLE_ADMIN') %}
-			<button type="button" class="btn btn-primary" style="height: fit-content">
-				<a href="{{ path('app_user_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Edit</a>
-			</button>
-		{% else %}
-			<button type="button" class="btn btn-primary" style="height: fit-content">
-				<a href="{{ path('app_profile_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Edit</a>
-			</button>
-		{% endif %}
-	</div>
-</div>{% endblock %}
+<div style="padding: 0 4rem" class="mt-4">
+    {% if is_granted('ROLE_ADMIN') %}
+    <button type="button" class="btn btn-primary" style="height: fit-content">
+        <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Edit</a>
+    </button>
+    {% else %}
+    <button type="button" class="btn btn-primary" style="height: fit-content">
+        <a href="{{ path('app_profile_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Edit</a>
+    </button>
+    {% endif %}
+</div>
+{% endblock %}

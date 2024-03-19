@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\Security\Csrf\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 #[Route('auth/user')]
 
@@ -24,10 +24,20 @@ class ProfileUserController extends AbstractController
     {
         $articles = $articlesRepository->findArticlesByUSer($user->getId());
         $comments = $commentsRepository->findCommentsByUser($user->getId());
+        
+        $articlesByComment = [];
+        foreach ($comments as $comment) {
+            $article = $comment->getArticles();
+            if ($article) {
+                $articlesByComment[$comment->getId()] = $article;
+            }
+        }
+
         return $this->render('profile/show.html.twig', [
             'user' => $user,
             'articles' => $articles,
-            'comments' => $comments
+            'comments' => $comments,
+            'articlesByComment' => $articlesByComment
         ]);
     }
     #[Route('/{id}/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
@@ -40,7 +50,6 @@ class ProfileUserController extends AbstractController
             $data= $request->request->all("edit_user_");       
 
             if ($this->isCsrfTokenValid("edit_user_",$data['_token'])) {
-
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
     
