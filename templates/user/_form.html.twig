@@ -1,5 +1,29 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_rest(form) }} {# Renders the CSRF token field #}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="d-flex flex-column align-items-center gap-4">
+	<div class="form-group col-12">
+		{{ form_label(form.email, 'Email:' ,{'label_attr': {'class': 'form-control-label'}}) }}
+		{{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="form-group col-12">
+		{{ form_label(form.avatar, 'Avatar:' ,{'label_attr': {'class': 'form-control-label'}}) }}
+		{{ form_widget(form.avatar, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="form-group col-12">
+		{{ form_label(form.twitterLink, 'Twitter:' ,{'label_attr': {'class': 'form-control-label'}}) }}
+		{{ form_widget(form.twitterLink, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="form-group col-12">
+		{{ form_label(form.facebookLink, 'Facebook:' ,{'label_attr': {'class': 'form-control-label'}}) }}
+		{{ form_widget(form.facebookLink, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="form-group col-12 d-none">
+		{{ form_label(form.password, 'Facebook:' ,{'label_attr': {'class': 'form-control-label'}}) }}
+		{{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+	</div>
+</div>
+
+<button class="btn btn-primary mt-4">{{ button_label|default('Save') }}</button>
+
+{{ form_errors(form) }}
+{{ form_rest(form) }}
 {{ form_end(form) }}
