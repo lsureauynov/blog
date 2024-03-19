@@ -18,6 +18,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 
+
 #[Route('/comments')]
 class CommentsController extends AbstractController
 {
@@ -30,7 +31,7 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/auth/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager, UrlGeneratorInterface $urlGenerator): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): Response
     {
         $comment = new Comments();
         
@@ -48,8 +49,11 @@ class CommentsController extends AbstractController
             $entityManager->persist($comment);
             $entityManager->flush();
     
-
-            return new RedirectResponse($urlGenerator->generate('app_articles_show', ['id' => $articleId]));
+            // Ajouter un message flash
+            $this->addFlash('success', 'Commentaire enregistré avec succès.');
+    
+            // Rediriger l'utilisateur vers la même page pour recharger le formulaire
+            return new RedirectResponse($urlGenerator->generate('app_comments_new', ['articleId' => $articleId]));
         }
     
         return $this->render('comments/new.html.twig', [

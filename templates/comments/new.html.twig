@@ -1,4 +1,9 @@
 {% block body %}
+	{% for flashMessage in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
 
     {{ include('comments/_form.html.twig') }}
 
