@@ -15,12 +15,7 @@ class CommentsType extends AbstractType
     {
         $builder
             ->add('date')
-            ->add('content')
-            ->add('articles', EntityType::class, [
-                'class' => Articles::class,
-'choice_label' => 'id',
-            ])
-        ;
+            ->add('content');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

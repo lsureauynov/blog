@@ -6,6 +6,7 @@ use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\ArticlesRepository;
 use App\Repository\UserRepository;
+use App\Repository\CommentsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -96,7 +97,7 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_articles_show', methods: ['GET'])]
-    public function show(Articles $article, UserRepository $userRepository): Response
+    public function show(Articles $article, UserRepository $userRepository, CommentsRepository $commentsRepository): Response
     {
 
         $userId = $article->getUser();
@@ -105,11 +106,13 @@ class ArticlesController extends AbstractController
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
+        $comments = $commentsRepository->findCommentsByArticle($article->getId());
 
 
         return $this->render('articles/show.html.twig', [
             'article' => $article,
             'user' => $user,
+            'comments' => $comments
         ]);
     }
 
