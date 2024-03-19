@@ -24,10 +24,20 @@ class ProfileUserController extends AbstractController
     {
         $articles = $articlesRepository->findArticlesByUSer($user->getId());
         $comments = $commentsRepository->findCommentsByUser($user->getId());
+        
+        $articlesByComment = [];
+        foreach ($comments as $comment) {
+            $article = $comment->getArticles();
+            if ($article) {
+                $articlesByComment[$comment->getId()] = $article;
+            }
+        }
+
         return $this->render('profile/show.html.twig', [
             'user' => $user,
             'articles' => $articles,
-            'comments' => $comments
+            'comments' => $comments,
+            'articlesByComment' => $articlesByComment
         ]);
     }
     #[Route('/{id}/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
