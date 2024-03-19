@@ -1,10 +1,14 @@
 {{ form_start(form) }}
 
-    {# Render all form fields including content #}
-    {{ form_widget(form) }}
+<div class="comment-form">
+    <div class="form-group mb-4">
+        {{ form_label(form.content, 'Leave a Comment:', {'label_attr': {'class': 'form-control-label'}}) }}
+        {{ form_widget(form.content, {'attr': {'class': 'form-control', 'style': 'width: 300px'}}) }}
+    </div>
 
-    {# Render the CSRF token field and the submit button #}
-    {{ form_rest(form) }} {# Renders the CSRF token field #}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="form-group mt-4">
+        <button class="btn btn-primary">{{ button_label|default('Post Comment') }}</button>
+    </div>
+</div>
 
 {{ form_end(form) }}
