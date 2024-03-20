@@ -76,58 +76,49 @@
 			</div>
 		</div>
 
-{% if app.user is not null and article.user is not null %}
-    {% if app.user.id == article.user.id %}
-        <div class="row justify-content-center mt-4">
-            <div class="col-md-8 d-flex gap-2">
-                <button class="btn btn-primary" style="width: fit-content">
-                    <a href="{{ path('app_articles_edit', {'id': article.id}) }}" class="text-light text-decoration-none">Edit</a>
-                </button>
+		<div class="row justify-content-center mt-4">
+			<div class="col-md-8">
+				<h4>Previous Comments</h4>
+				{% include 'comments/showByArticles.html.twig' with {'comments': comments} %}
+			</div>
+		</div>
 
-                {{ include('articles/_delete_form.html.twig') }}
-            </div>
-        </div>
-    {% endif %}
-{% endif %}
-	<div class="container">
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-8">
-            <h2>Comments</h2>
-        </div>
-    </div>
+		{% if app.user %}
+			<div class="row justify-content-center mt-4">
+				<div class="card shadow col-md-8 rounded-3 d-flex flex-column gap-2 p-0">
+					<div class="card-header p-4 h4">
+						Leave a comment
+					</div>
 
-    <!-- Comment Form -->
-{% if app.user %}
-    <!-- Comment Form -->
-    <div class="row justify-content-center mt-3">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Leave a Comment</h5>
-                    <iframe class="comment-iframe" src="{{ path('app_comments_new', {'articleId': article.id}) }}" frameborder="0" scrolling="no"></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
-{% else %}
-    <div class="row justify-content-center mt-3">
-        <div class="col-md-8">
-            <div class="alert alert-info" role="alert">
-                You need to <a href="{{ path('app_login') }}">login</a> before you can leave a comment.
-            </div>
-        </div>
-    </div>
-{% endif %}
-    <!-- Comment Section -->
-    <div class="row justify-content-center mt-5">
-        <div class="col-md-8">
-            <h3>Previous Comments</h3>
-            {% include 'comments/showByArticles.html.twig' with {'comments': comments} %}
-        </div>
-    </div>
-</div>
+					<div class="card-body p-4">
+						<iframe class="comment-iframe" src="{{ path('app_comments_new', {'articleId': article.id}) }}" frameborder="0" scrolling="no"></iframe>
+					</div>
+				</div>
+			</div>
+		{% else %}
+			<div class="row justify-content-center mt-4">
+				<div class="col-md-8">
+					<div class="alert alert-info" role="alert">
+						You need to
+						<a href="{{ path('app_login') }}">login</a>
+						before you can leave a comment.
+					</div>
+				</div>
+			</div>
+		{% endif %}
 
+		{% if app.user is not null and article.user is not null %}
+			{% if app.user.id == article.user.id %}
+				<div class="row justify-content-center mt-4">
+					<div class="col-md-8 d-flex gap-2">
+						<button class="btn btn-primary" style="width: fit-content">
+							<a href="{{ path('app_articles_edit', {'id': article.id}) }}" class="text-light text-decoration-none">Edit</a>
+						</button>
 
-</div>
-
+						{{ include('articles/_delete_form.html.twig') }}
+					</div>
+				</div>
+			{% endif %}
+		{% endif %}
+	</div>
 {% endblock %}
