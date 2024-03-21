@@ -22,38 +22,55 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[Route('/comments')]
 class CommentsController extends AbstractController
 {
+
+    private CommentsRepository $commentsRepository;
+    private EntityManagerInterface $entityManager;
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(
+        CommentsRepository $commentsRepository,
+        EntityManagerInterface $entityManager,
+        UrlGeneratorInterface $urlGenerator
+    ) {
+        $this->commentsRepository = $commentsRepository;
+        $this->entityManager = $entityManager;
+        $this->urlGenerator = $urlGenerator;
+    }
+
     #[Route('/', name: 'app_comments_index', methods: ['GET'])]
-    public function index(CommentsRepository $commentsRepository): Response
+    public function index(): Response
     {
+        $comments = $this->commentsRepository->findAll();
         return $this->render('comments/index.html.twig', [
-            'comments' => $commentsRepository->findAll(),
+            'comments' => $comments
         ]);
     }
 
     #[Route('/auth/new', name: 'app_comments_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): Response
+    public function new(Request $request): Response
     {
         $comment = new Comments();
         
         $articleId = $request->query->get('articleId');
-        $article = $entityManager->getRepository(Articles::class)->find($articleId);
+        $article = $this->entityManager->getRepository(Articles::class)->find($articleId);
         $user = $this->getUser();
     
         $comment->setArticles($article);
         $comment->setUser($user);
+        $currentDate = new \DateTime();
+        $comment->setDate(new \DateTime());
     
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($comment);
-            $entityManager->flush();
+        
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
     
-            // Ajouter un message flash
             $this->addFlash('success', 'Commentaire enregistré avec succès.');
     
-            // Rediriger l'utilisateur vers la même page pour recharger le formulaire
-            return new RedirectResponse($urlGenerator->generate('app_comments_new', ['articleId' => $articleId]));
+            return new RedirectResponse($this->urlGenerator->generate('app_comments_new', ['articleId' => $articleId]));
         }
     
         return $this->render('comments/new.html.twig', [
@@ -71,7 +88,7 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/auth/{id}/edit', name: 'app_comments_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Comments $comment, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function edit(Request $request, Comments $comment): Response
     {
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
@@ -87,7 +104,7 @@ class CommentsController extends AbstractController
             }
     
             if ($form->isValid()) {
-                $entityManager->flush();
+                $this->entityManager->flush();
 
     
                 return $this->redirectToRoute('app_articles_show', ['id' => $articleId]);
@@ -100,11 +117,11 @@ class CommentsController extends AbstractController
         ]);
     }
     #[Route('/adminauth/{id}', name: 'app_comments_delete', methods: ['POST'])]
-    public function delete(Request $request, Comments $comment, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Comments $comment): Response
     {
         if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($comment);
-            $entityManager->flush();
+            $this->entityManager->remove($comment);
+            $this->entityManager->flush();
         }
         $articleId = $comment->getArticles()->getId();
 
@@ -115,9 +132,9 @@ class CommentsController extends AbstractController
 
 
         #[Route('/article/{id}', name: 'app_comments_by_article', methods: ['GET'])]
-        public function getByArticle(Articles $articles, CommentsRepository $commentsRepository): Response
+        public function getByArticle(Articles $articles): Response
         {
-            $comments = $commentsRepository->findCommentsByArticle($articles->getId());
+            $comments = $this->commentsRepository->findCommentsByArticle($articles->getId());
     
             return $this->render('comments/showByArticles.html.twig', [
                 'comments' => $comments,

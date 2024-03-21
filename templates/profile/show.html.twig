@@ -100,14 +100,9 @@
 </div>
 
 <div style="padding: 0 4rem" class="mt-4">
-    {% if is_granted('ROLE_ADMIN') %}
-    <button type="button" class="btn btn-primary" style="height: fit-content">
-        <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Edit</a>
-    </button>
-    {% else %}
     <button type="button" class="btn btn-primary" style="height: fit-content">
         <a href="{{ path('app_profile_edit', {'id': user.id}) }}" class="text-light text-decoration-none">Edit</a>
     </button>
-    {% endif %}
+
 </div>
 {% endblock %}

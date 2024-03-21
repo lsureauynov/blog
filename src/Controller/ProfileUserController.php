@@ -11,19 +11,34 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+
 
 #[Route('auth/user')]
 
 class ProfileUserController extends AbstractController
 {
+
+    private ArticlesRepository $articlesRepository;
+    private CommentsRepository $commentsRepository;
+    private EntityManagerInterface $entityManager;
+
+
+    public function __construct(
+        ArticlesRepository $articlesRepository,
+        CommentsRepository $commentsRepository,
+        EntityManagerInterface $entityManager,
+    ) {
+        $this->articlesRepository = $articlesRepository;
+        $this->commentsRepository = $commentsRepository;
+        $this->entityManager = $entityManager;
+    }
+
+
     #[Route('/{id}', name: 'app_profile_show', methods: ['GET'])]
-    public function show(User $user, ArticlesRepository $articlesRepository, CommentsRepository $commentsRepository): Response
+    public function show(User $user): Response
     {
-        $articles = $articlesRepository->findArticlesByUSer($user->getId());
-        $comments = $commentsRepository->findCommentsByUser($user->getId());
+        $articles = $this->articlesRepository->findArticlesByUSer($user->getId());
+        $comments = $this->commentsRepository->findCommentsByUser($user->getId());
         
         $articlesByComment = [];
         foreach ($comments as $comment) {
@@ -41,7 +56,7 @@ class ProfileUserController extends AbstractController
         ]);
     }
     #[Route('/{id}/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function edit(Request $request, User $user): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -49,12 +64,9 @@ class ProfileUserController extends AbstractController
         if ($form->isSubmitted()) {
             $data= $request->request->all("edit_user_");       
 
-            if ($this->isCsrfTokenValid("edit_user_",$data['_token'])) {
-                throw new InvalidCsrfTokenException('Invalid CSRF token.');
-            }
     
             if ($form->isValid()) {
-                $entityManager->flush();
+                $this->entityManager->flush();
                 return $this->redirectToRoute('app_profile_show', ['id' => $user->getId()], Response::HTTP_SEE_OTHER);
             }
         }
@@ -66,15 +78,15 @@ class ProfileUserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_profile_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function delete(Request $request, User $user): Response
     {
         $data= $request->request->all("edit_user_");       
 
         if ($this->isCsrfTokenValid("edit_user_",$data['_token'])) {
             throw new InvalidCsrfTokenException('Invalid CSRF token.');
         }
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
 
 
         return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);

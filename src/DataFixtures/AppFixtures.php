@@ -33,15 +33,15 @@ class AppFixtures extends Fixture
                 $article->setTitle('Article ' . $j . ' for User ' . $i);
                 $article->setContent('Content of Article ' . $j . ' for User ' . $i);
                 $article->setUser($user);
-                
+
                 // Set the date for the article
                 $article->setDate(new \DateTime());
                 $coverImage = sprintf('https://example.com/images/article_%d.jpg', $i);
                 $article->setCoverImage($coverImage);
-    
+
     
                 $manager->persist($article);
-    
+
                 $manager->persist($article);
 
                 // Create comments for each article
@@ -50,7 +50,7 @@ class AppFixtures extends Fixture
                     $comment->setContent('Comment ' . $k . ' on Article ' . $j . ' for User ' . $i);
                     $comment->setUser($user);
                     $comment->setArticles($article);
-                    
+
                     // Set the date for the comment
                     $comment->setDate(new \DateTime());
 
@@ -69,4 +69,4 @@ class AppFixtures extends Fixture
 
         $manager->flush();
     }
-}
+
