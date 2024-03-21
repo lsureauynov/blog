@@ -52,16 +52,19 @@ class CommentsController extends AbstractController
         $comment = new Comments();
         
         $articleId = $request->query->get('articleId');
-        $article = $entityManager->getRepository(Articles::class)->find($articleId);
+        $article = $this->entityManager->getRepository(Articles::class)->find($articleId);
         $user = $this->getUser();
     
         $comment->setArticles($article);
         $comment->setUser($user);
+        $currentDate = new \DateTime();
+        $comment->setDate(new \DateTime());
     
         $form = $this->createForm(CommentsType::class, $comment);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
+        
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
     

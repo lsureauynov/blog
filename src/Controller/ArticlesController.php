@@ -41,7 +41,8 @@ class ArticlesController extends AbstractController
     }
 
 
-    #[Route('/', name: 'app_articles_index', methods: ['GET'])]
+ 
+      #[Route('/', name: 'app_articles_index', methods: ['GET'])]
     public function index(): Response
     {
         $articles = $this->articlesRepository->findLastSixArticles();
