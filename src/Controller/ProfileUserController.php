@@ -11,9 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+
 
 #[Route('auth/user')]
 
@@ -23,18 +21,16 @@ class ProfileUserController extends AbstractController
     private ArticlesRepository $articlesRepository;
     private CommentsRepository $commentsRepository;
     private EntityManagerInterface $entityManager;
-    private CsrfTokenManagerInterface $csrfTokenManager;
+
 
     public function __construct(
         ArticlesRepository $articlesRepository,
         CommentsRepository $commentsRepository,
         EntityManagerInterface $entityManager,
-        CsrfTokenManagerInterface $csrfTokenManager
     ) {
         $this->articlesRepository = $articlesRepository;
         $this->commentsRepository = $commentsRepository;
         $this->entityManager = $entityManager;
-        $this->csrfTokenManager = $csrfTokenManager;
     }
 
 
@@ -68,9 +64,6 @@ class ProfileUserController extends AbstractController
         if ($form->isSubmitted()) {
             $data= $request->request->all("edit_user_");       
 
-            if ($this->isCsrfTokenValid("edit_user_",$data['_token'])) {
-                throw new InvalidCsrfTokenException('Invalid CSRF token.');
-            }
     
             if ($form->isValid()) {
                 $this->entityManager->flush();
