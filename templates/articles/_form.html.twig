@@ -13,6 +13,10 @@
 		{{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
 	</div>
 	<div class="form-group col-12">
+		{{ form_label(form.categories, 'Catégories:' ,{'label_attr': {'class': 'form-control-label'}}) }}
+		{{ form_widget(form.categories, {'attr': {'class': 'form-control d-flex gap-2'}}) }}
+	</div>
+	<div class="form-group col-12">
 		{{ form_label(form.cover, 'Cover image:' ,{'label_attr': {'class': 'form-control-label'}}) }}
 		{{ form_widget(form.cover, {'attr': {'class': 'form-control'}}) }}
 	</div>

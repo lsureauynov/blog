@@ -31,30 +31,29 @@ class CategoriesController extends AbstractController
         $category = new Categories();
         $form = $this->createForm(CategoriesType::class, $category);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted()) {
-            $data= $request->request->all("categories");       
+            $data = $request->request->all("categories");
 
-            if ($this->isCsrfTokenValid("categories",$data['_token'])) {
-
+            if ($this->isCsrfTokenValid("categories", $data['_token'])) {
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-    
+
             if ($form->isValid()) {
                 $entityManager->persist($category);
                 $entityManager->flush();
-    
+
                 return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-    
+
         return $this->render('categories/new.html.twig', [
             'category' => $category,
             'form' => $form->createView(),
         ]);
     }
-    
-    
+
+
     #[Route('/{id}', name: 'app_categories_show', methods: ['GET'])]
     public function show(Categories $category): Response
     {
@@ -68,22 +67,22 @@ class CategoriesController extends AbstractController
     {
         $form = $this->createForm(CategoriesType::class, $category);
         $form->handleRequest($request);
-    
-        if ($form->isSubmitted()) {
-            $data= $request->request->all("categories");       
 
-            if ($this->isCsrfTokenValid("categories",$data['_token'])) {
+        if ($form->isSubmitted()) {
+            $data = $request->request->all("categories");
+
+            if ($this->isCsrfTokenValid("categories", $data['_token'])) {
 
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
             }
-    
+
             if ($form->isValid()) {
                 $entityManager->flush();
-    
+
                 return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
             }
         }
-    
+
         return $this->render('categories/edit.html.twig', [
             'category' => $category,
             'form' => $form->createView(),

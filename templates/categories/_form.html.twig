@@ -1,5 +1,18 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_rest(form) }} {# Renders the CSRF token field #}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="d-flex flex-column align-items-center gap-4">
+	<div class="form-group col-12">
+		{{ form_label(form.category_title, 'Category title:' ,{'label_attr': {'class': 'form-control-label'}}) }}
+		{{ form_widget(form.category_title, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="form-group col-12">
+		{{ form_label(form.articles, 'Article associé:' ,{'label_attr': {'class': 'form-control-label'}}) }}
+		{{ form_widget(form.articles, {'attr': {'class': 'form-control d-flex gap-'}}) }}
+	</div>
+
+</div>
+
+{{ form_rest(form) }}
+{# Renders the CSRF token field #}
+
+<button class="btn btn-primary mt-4">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
