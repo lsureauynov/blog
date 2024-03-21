@@ -20,11 +20,12 @@ class ArticlesType extends AbstractType
             ->add('title')
             ->add('description')
             ->add('content', CKEditorType::class)
-            // ->add('categories', EntityType::class, [
-            //     'class' => Categories::class,
-            //     'choice_label' => 'id',
-            //     'multiple' => true,
-            // ])
+            ->add('categories', EntityType::class, [
+                'class' => Categories::class,
+                'choice_label' => 'category_title',
+                'expanded' => true,
+                'multiple' => true,
+            ])
             ->add('cover', FileType::class, [
                 'label' => 'Upload your cover image',
                 'mapped' => false,

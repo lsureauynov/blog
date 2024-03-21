@@ -21,6 +21,7 @@ class CommentsRepository extends ServiceEntityRepository
         parent::__construct($registry, Comments::class);
     }
 
+
 public function findCommentsByUser($userId) : array 
 {
     return $this->createQueryBuilder('a')
@@ -41,7 +42,15 @@ public function findCommentsByArticle($articleId) : array
         ->getQuery()
         ->getResult();
 
-}
 
-
+    public function findCommentsByArticle($articleId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.articles', 'a')
+            ->andWhere('a.id = :articleId')
+            ->setParameter('articleId', $articleId)
+            ->orderBy('c.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

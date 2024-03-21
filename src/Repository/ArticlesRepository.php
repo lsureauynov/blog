@@ -42,14 +42,15 @@ class ArticlesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findArticlesByUser($userId) : array 
+
+    public function findArticlesByUser($userId): array
     {
         return $this->createQueryBuilder('a')
-        ->andWhere('a.user = :userId')
-        ->setParameter('userId', $userId)
-        ->orderBy('a.id', 'DESC')
-        ->getQuery()
-        ->getResult();
+            ->andWhere('a.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('a.id', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     public function findArticlesByTitle($title)
@@ -61,4 +62,13 @@ class ArticlesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findArticlesByCategories($categories)
+    {
+        return $this->createQueryBuilder('a')
+            ->join('a.categories', 'c')
+            ->andWhere('c IN (:categories)')
+            ->setParameter('categories', $categories)
+            ->getQuery()
+            ->getResult();
+    }
 }

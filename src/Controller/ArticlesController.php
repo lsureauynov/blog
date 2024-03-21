@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\ArticlesRepository;
+use App\Repository\CategoriesRepository;
 use App\Repository\UserRepository;
 use App\Repository\CommentsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class ArticlesController extends AbstractController
 {
     private ArticlesRepository $articlesRepository;
+    private CategoryRepository $categoriesRepository;
     private UserRepository $userRepository;
     private CommentsRepository $commentsRepository;
     private EntityManagerInterface $entityManager;
@@ -29,12 +31,14 @@ class ArticlesController extends AbstractController
     public function __construct(
         ArticlesRepository $articlesRepository,
         UserRepository $userRepository,
+      CategoryRepository $categoriesRepository,
         CommentsRepository $commentsRepository,
         EntityManagerInterface $entityManager,
         SluggerInterface $slugger
     ) {
         $this->articlesRepository = $articlesRepository;
         $this->userRepository = $userRepository;
+        $this->categoryRepository = $categoriesRepository
         $this->commentsRepository = $commentsRepository;
         $this->entityManager = $entityManager;
         $this->slugger = $slugger;
@@ -102,6 +106,11 @@ class ArticlesController extends AbstractController
                 $article->setCoverImage($newFilename);
             }
 
+            $selectedCategories = $form->get('categories')->getData();
+            foreach ($selectedCategories as $category) {
+                $article->addCategory($category);
+            }
+
             if ($form->isValid()) {
                 $this->entityManager->persist($article);
                 $this->entityManager->flush();
@@ -115,37 +124,72 @@ class ArticlesController extends AbstractController
         ]);
     }
 
+
   #[Route('/{id}', name: 'app_articles_show', methods: ['GET'])]
     public function show(Articles $article): Response
     {
         $user = $this->userRepository->find($article->getUser());
 
+
         if (!$user) {
             throw $this->createNotFoundException('User not found');
         }
 
+
         $comments = $this->commentsRepository->findCommentsByArticle($article->getId());
+
+
+       
+        $categories = $this->categoriesRepository->findCategoryByArticle($article->getId());
+
+        $categories = $article->getCategories();
+
+        $articlesWithSameCategories = $articlesRepository->findArticlesByCategories($categories);
+>
 
         return $this->render('articles/show.html.twig', [
             'article' => $article,
             'user' => $user,
-            'comments' => $comments
+            'comments' => $comments,
+            'categories' => $categories,
+            'articlesWithSameCategories' => $articlesWithSameCategories,
         ]);
     }
 
     #[Route('/auth/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
+
     public function edit(Request $request, Articles $article): Response
-    {
+
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-
             $data = $request->request->all("articles");
-
             if ($this->isCsrfTokenValid("articles", $data['_token'])) {
-
                 throw new InvalidCsrfTokenException('Invalid CSRF token.');
+            }
+
+            $cover = $form->get('cover')->getData();
+            if ($cover) {
+                $originalFilename = pathinfo($cover->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $cover->guessExtension();
+
+                try {
+                    $cover->move(
+                        $this->getParameter('covers_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                $article->setCoverImage($newFilename);
+            }
+
+            $selectedCategories = $form->get('categories')->getData();
+            foreach ($selectedCategories as $category) {
+                $article->addCategory($category);
             }
 
             if ($form->isValid()) {
@@ -175,12 +219,15 @@ class ArticlesController extends AbstractController
     }
 
 
+
     #[Route('/search', name: "app_articles_search", methods: ["GET"])]
     public function searchByTitle(Request $request) : JsonResponse
     {
+
         $query = $request->query->get('query');
 
         $articles = $this->articlesRepository->findArticlesByTitle($query);
+
 
         $jsonData = [];
         foreach ($articles as $article) {
@@ -189,12 +236,13 @@ class ArticlesController extends AbstractController
                 'title' => $article->getTitle(),
             ];
         }
-    
+
         return new JsonResponse($jsonData);
     }
          
     
     #[Route('/search_results', name: 'app_search_result', methods: ['GET'])]
+
     public function searchResult(Request $request): Response
     {
     $query = $request->query->get('query');
@@ -206,5 +254,5 @@ class ArticlesController extends AbstractController
     ]);
     }
 
-   
+
 }

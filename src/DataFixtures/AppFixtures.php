@@ -39,7 +39,7 @@ class AppFixtures extends Fixture
                 $coverImage = sprintf('https://example.com/images/article_%d.jpg', $i);
                 $article->setCoverImage($coverImage);
 
-
+    
                 $manager->persist($article);
 
                 $manager->persist($article);
@@ -69,4 +69,4 @@ class AppFixtures extends Fixture
 
         $manager->flush();
     }
-}
+
