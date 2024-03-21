@@ -69,10 +69,13 @@
 
 		<div class="row justify-content-center mt-4">
 			<div class="col-md-8">
-				<p>Tags :</p>
-				{% for category in article.categories %}
-					{{ category }}
-				{% endfor %}
+				<p>Tags :
+					{% for category in categories %}
+						{{ category.getCategoryTitle() }}
+						{% if not loop.last %},
+						{% endif %}
+					{% endfor %}
+				</p>
 			</div>
 		</div>
 
@@ -103,6 +106,21 @@
 						<a href="{{ path('app_login') }}">login</a>
 						before you can leave a comment.
 					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		{% if articlesWithSameCategories is not empty %}
+			<div class="row justify-content-center mt-4">
+				<div class="col-md-8">
+					<h2>What to read next ?</h2>
+					<ul>
+						{% for article in articlesWithSameCategories %}
+							<li>
+								<a href="{{ path('app_articles_show', {'id': article.id}) }}">{{ article.title }}</a>
+							</li>
+						{% endfor %}
+					</ul>
 				</div>
 			</div>
 		{% endif %}

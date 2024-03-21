@@ -17,10 +17,9 @@ class CategoriesType extends AbstractType
             ->add('category_title')
             ->add('articles', EntityType::class, [
                 'class' => Articles::class,
-'choice_label' => 'id',
-'multiple' => true,
-            ])
-        ;
+                'choice_label' => 'title',
+                'multiple' => true,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
