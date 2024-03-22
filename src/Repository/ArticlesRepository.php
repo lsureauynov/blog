@@ -61,7 +61,7 @@ class ArticlesRepository extends ServiceEntityRepository
         /**
      * @return Articles[] Returns an array of Articles objects
      */
-    public function findArticlesByTitle(string $title) : array
+    public function findArticlesByTitle($title) : array
     {
         return $this->createQueryBuilder('a')
             ->where('a.title LIKE :title')
@@ -73,7 +73,7 @@ class ArticlesRepository extends ServiceEntityRepository
         /**
      * @return Articles[] Returns an array of Articles objects
      */
-    public function findArticlesByCategories(string $categories) : array
+    public function findArticlesByCategories($categories) : array
     {
         return $this->createQueryBuilder('a')
             ->join('a.categories', 'c')

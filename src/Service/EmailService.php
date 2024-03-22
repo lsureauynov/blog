@@ -17,9 +17,9 @@ class EmailService
     public function sendEmail(string $toEmail, string $templateId): void
     {
         $email = new Mail(); 
-        $email->setFrom("lea.sureau@ynov.com", "Example User");
+        $email->setFrom("lea.sureau@ynov.com", "Blog");
         $email->setSubject("Sending with SendGrid is Fun");
-        $email->addTo($toEmail, "Example User");
+        $email->addTo($toEmail, "Newcomer!");
         $email->setTemplateId($templateId); 
 
         $sendgrid = new SendGrid($this->sendGridApiKey);
