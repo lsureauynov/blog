@@ -17,16 +17,24 @@ use Symfony\Component\Security\Csrf\Exception\InvalidCsrfTokenException;
 #[Route('/categories')]
 class CategoriesController extends AbstractController
 {
+    private CategoriesRepository $categoriesRepository;
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(CategoriesRepository $categoriesRepository, EntityManagerInterface $entityManager) {
+        $this->categoriesRepository = $categoriesRepository;
+        $this->entityManager = $entityManager;
+    }
+
     #[Route('/', name: 'app_categories_index', methods: ['GET'])]
-    public function index(CategoriesRepository $categoriesRepository): Response
+    public function index(): Response
     {
         return $this->render('categories/index.html.twig', [
-            'categories' => $categoriesRepository->findAll(),
+            'categories' => $this->categoriesRepository->findAll(),
         ]);
     }
 
     #[Route('/admin/new', name: 'app_categories_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function new(Request $request, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         $category = new Categories();
         $form = $this->createForm(CategoriesType::class, $category);
@@ -40,8 +48,8 @@ class CategoriesController extends AbstractController
             }
 
             if ($form->isValid()) {
-                $entityManager->persist($category);
-                $entityManager->flush();
+                $this->entityManager->persist($category);
+                $this->entityManager->flush();
 
                 return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
             }
@@ -63,7 +71,7 @@ class CategoriesController extends AbstractController
     }
 
     #[Route('/admin/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Categories $category, EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager): Response
+    public function edit(Request $request, Categories $category, CsrfTokenManagerInterface $csrfTokenManager): Response
     {
         $form = $this->createForm(CategoriesType::class, $category);
         $form->handleRequest($request);
@@ -77,7 +85,7 @@ class CategoriesController extends AbstractController
             }
 
             if ($form->isValid()) {
-                $entityManager->flush();
+                $this->entityManager->flush();
 
                 return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
             }
@@ -90,11 +98,11 @@ class CategoriesController extends AbstractController
     }
 
     #[Route('/admin/{id}', name: 'app_categories_delete', methods: ['POST'])]
-    public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Categories $category): Response
     {
         if ($this->isCsrfTokenValid('delete' . $category->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($category);
-            $entityManager->flush();
+            $this->entityManager->remove($category);
+            $this->entityManager->flush();
         }
 
         return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);

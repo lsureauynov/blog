@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class ArticlesController extends AbstractController
 {
     private ArticlesRepository $articlesRepository;
-    private CategoryRepository $categoriesRepository;
+    private CategoriesRepository $categoriesRepository;
     private UserRepository $userRepository;
     private CommentsRepository $commentsRepository;
     private EntityManagerInterface $entityManager;
@@ -31,14 +31,14 @@ class ArticlesController extends AbstractController
     public function __construct(
         ArticlesRepository $articlesRepository,
         UserRepository $userRepository,
-      CategoryRepository $categoriesRepository,
+        CategoriesRepository $categoriesRepository,
         CommentsRepository $commentsRepository,
         EntityManagerInterface $entityManager,
         SluggerInterface $slugger
     ) {
         $this->articlesRepository = $articlesRepository;
         $this->userRepository = $userRepository;
-        $this->categoryRepository = $categoriesRepository
+        $this->categoriesRepository = $categoriesRepository;
         $this->commentsRepository = $commentsRepository;
         $this->entityManager = $entityManager;
         $this->slugger = $slugger;
@@ -144,8 +144,8 @@ class ArticlesController extends AbstractController
 
         $categories = $article->getCategories();
 
-        $articlesWithSameCategories = $articlesRepository->findArticlesByCategories($categories);
->
+        $articlesWithSameCategories = $this->articlesRepository->findArticlesByCategories($categories);
+
 
         return $this->render('articles/show.html.twig', [
             'article' => $article,
@@ -157,9 +157,8 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/auth/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
-
     public function edit(Request $request, Articles $article): Response
-
+{
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
 

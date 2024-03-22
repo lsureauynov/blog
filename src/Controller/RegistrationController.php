@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 class RegistrationController extends AbstractController
 {
-    private $emailService;
+    private EmailService $emailService;
     private EntityManagerInterface $entityManager;
 
     public function __construct(EmailService $emailService, EntityManagerInterface $entityManager)
