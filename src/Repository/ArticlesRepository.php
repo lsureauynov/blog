@@ -33,6 +33,9 @@ class ArticlesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Articles[] Returns an array of Articles objects
+     */
     public function findLastArticle(): array
     {
         return $this->createQueryBuilder('a')
@@ -42,8 +45,10 @@ class ArticlesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
-    public function findArticlesByUser($userId): array
+    /**
+     * @return Articles[] Returns an array of Articles objects
+     */
+    public function findArticlesByUser(int $userId): array
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.user = :userId')
@@ -53,7 +58,10 @@ class ArticlesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findArticlesByTitle($title)
+        /**
+     * @return Articles[] Returns an array of Articles objects
+     */
+    public function findArticlesByTitle(string $title) : array
     {
         return $this->createQueryBuilder('a')
             ->where('a.title LIKE :title')
@@ -62,7 +70,10 @@ class ArticlesRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findArticlesByCategories($categories)
+        /**
+     * @return Articles[] Returns an array of Articles objects
+     */
+    public function findArticlesByCategories(string $categories) : array
     {
         return $this->createQueryBuilder('a')
             ->join('a.categories', 'c')

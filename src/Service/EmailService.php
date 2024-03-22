@@ -7,14 +7,14 @@ use SendGrid;
 
 class EmailService
 {
-    private $sendGridApiKey;
+    private string $sendGridApiKey;
 
     public function __construct(string $sendGridApiKey)
     {
         $this->sendGridApiKey = $sendGridApiKey;
     }
 
-    public function sendEmail(string $toEmail, $templateId): void
+    public function sendEmail(string $toEmail, string $templateId): void
     {
         $email = new Mail(); 
         $email->setFrom("lea.sureau@ynov.com", "Example User");
@@ -29,7 +29,7 @@ class EmailService
             print_r($response->headers());
             print $response->body() . "\n";
         } catch (Exception $e) {
-            echo 'Caught exception: '. $e->getMessage() ."\n";
+            echo "An error occured";
         }
     }   
 }
